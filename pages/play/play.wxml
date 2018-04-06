@@ -16,4 +16,7 @@
     <button bindtap="bindHighTap">高</button>
     <button bindtap="bindLowTap">低</button>
   </view>
+  <view class="retry">
+    <button bindtap="bindRetryTap" disabled='{{!retry}}'>重听</button>
+  </view>
 </view>

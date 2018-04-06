@@ -3,7 +3,7 @@
 const app = getApp()
 var audioCtx
 var amp
-var direction
+var direction = null
 
 Page({
   data: {
@@ -11,10 +11,10 @@ Page({
     score: 0,
     level: 1,
     lifes: 3,
+    retry: true,
     answer: "\n"
   },
   bindHighTap: function () {
-    audioCtx.close()
     if (direction == 1) {
       this.setData({
         score: this.data.score + this.data.level * 10,
@@ -31,10 +31,9 @@ Page({
       })
     }
     console.log(this.data.answer)
-    this.playNotes(this.data.level)
+    this.playNotes()
   },
   bindLowTap: function () {
-    audioCtx.close()
     if (direction == -1) {
       this.setData({
         score: this.data.score + this.data.level * 10,
@@ -56,12 +55,19 @@ Page({
         url: '../end/end',
       })
     }
-    this.playNotes(this.data.level)
+    this.playNotes()
+  },
+  bindRetryTap: function () {
+    this.setData({
+      retry: true
+    })
+    this.playNotes(true)
   },
   onLoad: function () {
-    this.playNotes(this.data.level)
+    this.playNotes()
   },
-  playNotes: function (level) {
+  playNotes: function (isRetry = false) {
+    if (audioCtx) audioCtx.close()
     audioCtx = new AudioContext
     amp = audioCtx.createGain()
     amp.gain.value = 0.5
@@ -70,10 +76,10 @@ Page({
     const osc2 = audioCtx.createOscillator()
     var now = audioCtx.currentTime + 0.5;
 
-    direction = Math.round(Math.random()) * 2 - 1
+    if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
     osc1.frequency.setValueAtTime(440, now);
     osc2.frequency.setValueAtTime(440, now + 1.618);
-    osc2.detune.setValueAtTime(direction * 100 / level, now + 2.236)
+    osc2.detune.setValueAtTime(direction * 100 / this.data.level, now + 2.236)
     osc1.connect(amp)
     osc2.connect(amp)
 
@@ -81,6 +87,6 @@ Page({
     osc1.stop(now + 1.618)
     osc2.start(now + 2.236)
     osc2.stop(now + 3.854)
-    console.log(this.data.level, this.data.score)
+    console.log(this.data.level, this.data.score, direction, isRetry)
   }
 })
