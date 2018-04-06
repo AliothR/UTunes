@@ -1,0 +1,6 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="level">
+    <text>GAME OVER</text>
+  </view>
+</view>

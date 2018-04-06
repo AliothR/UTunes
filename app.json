@@ -1,7 +1,9 @@
 {
   "pages":[
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/start/start",
+    "pages/logs/logs",
+    "pages/play/play",
+    "pages/end/end"
   ],
   "window":{
     "backgroundTextStyle":"light",

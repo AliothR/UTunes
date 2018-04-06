@@ -16,6 +16,6 @@
   color: #aaa;
 }
 
-.usermotto {
+.gamestart {
   margin-top: 200px;
 }

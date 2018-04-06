@@ -1,0 +1,19 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="level">
+    <text>Level: {{level}}</text>
+  </view>
+  <view class="score">
+    <text>Score: {{score}}</text>
+  </view>
+  <view class="lifes">
+    <text>Lifes: {{lifes}}</text>
+  </view>
+  <view class="answer">
+    <text wx:if="{{answer}}">{{answer}}</text>
+  </view>
+  <view class="select">
+    <button bindtap="bindHighTap">高</button>
+    <button bindtap="bindLowTap">低</button>
+  </view>
+</view>

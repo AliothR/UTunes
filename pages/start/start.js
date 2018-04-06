@@ -2,6 +2,7 @@
 //获取应用实例
 const app = getApp()
 
+
 Page({
   data: {
     motto: 'Hello World',
@@ -13,6 +14,11 @@ Page({
   bindViewTap: function() {
     wx.navigateTo({
       url: '../logs/logs'
+    })
+  },
+  bindPlayTap: function() {
+    wx.navigateTo({
+      url: '../play/play',
     })
   },
   onLoad: function () {

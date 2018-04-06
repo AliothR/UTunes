@@ -1,0 +1,5 @@
+/**play.wxss**/
+.scoreboard {
+  margin-top: 50px;
+  color: #aaa;
+}
