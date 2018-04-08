@@ -34,6 +34,10 @@ App({
     })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    scoreboard: {
+      level: 0,
+      score: 0
+    }
   }
 })

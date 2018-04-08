@@ -19,4 +19,10 @@
   <view class="retry">
     <button bindtap="bindRetryTap" disabled='{{!retry}}'>重听</button>
   </view>
+  <view class="playing">
+    <text wx:if="{{note_one_playing}}">Note 1 playing</text>
+    <block wx:else>
+      <text wx:if="{{note_two_playing}}">Note 2 playing</text>
+    </block>
+  </view>
 </view>

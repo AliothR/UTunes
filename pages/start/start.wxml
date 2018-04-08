@@ -8,6 +8,6 @@
     </block>
   </view>
   <view class="gamestart">
-    <button wx:if="{{hasUserInfo}}" bindtap='bindPlayTap'>Start</button>
+    <button wx:if="{{hasUserInfo}}" bindtap='bindPlayTap'>开始</button>
   </view>
 </view>

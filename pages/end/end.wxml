@@ -1,6 +1,12 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="level">
+  <view class="gameover">
     <text>GAME OVER</text>
+  </view>
+  <view class="gameover">
+    <text>Level {{scoreboard.level}} Score {{scoreboard.score}}</text>
+  </view>
+  <view>
+    <button bindtap="bindRestartTap">重新开始</button>
   </view>
 </view>
