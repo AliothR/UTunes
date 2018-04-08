@@ -2,9 +2,15 @@
 <view class="container">
   <view class="gameover">
     <text>GAME OVER</text>
+  </view> 
+  <view class="level">
+    <text>Level: {{scoreboard.level}}</text>
   </view>
-  <view class="gameover">
-    <text>Level {{scoreboard.level}} Score {{scoreboard.score}}</text>
+  <view class="score">
+    <text>Score: {{scoreboard.score}}</text>
+  </view>
+  <view class="ratio">
+    <text>Ratio: {{scoreboard.ratio}}%</text>
   </view>
   <view>
     <button bindtap="bindRestartTap">重新开始</button>

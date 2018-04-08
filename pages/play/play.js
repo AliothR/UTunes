@@ -8,33 +8,47 @@ var direction = null
 Page({
   data: {
     userInfo: null,
-    score: 0,
+    score: 10,
     level: 1,
     lifes: 3,
+    ratio: 100,
     retry: true,
     answer: "\n",
-    playing: false,
     note_one_playing: false,
     note_two_playing: false
   },
   bindHighTap: function () {
+    this.setData({
+      note_one_playing: false,
+      note_two_playing: false
+    })
+    audioCtx.close()
     this.judge(1)
   },
   bindLowTap: function () {
+    this.setData({
+      note_one_playing: false,
+      note_two_playing: false
+    })
+    audioCtx.close()
     this.judge(-1)
   },
   bindRetryTap: function () {
     this.setData({
-      retry: false
+      retry: false,
+      note_one_playing: false,
+      note_two_playing: false
     })
+    audioCtx.close()
     this.playNotes(true)
   },
   onLoad: function () {
     this.setData({
       userInfo: app.globalData.userInfo,
-      score: 0,
+      score: 10,
       level: 1,
       lifes: 3,
+      ratio: 100,
       retry: true,
       answer: "\n",
       note_one_playing: false,
@@ -45,30 +59,31 @@ Page({
   judge: function (answer) {
     if (direction == answer) {
       this.setData({
-        score: this.data.score + this.data.level * 10,
+        score: this.data.score + Math.max(10, Math.ceil(this.data.level / 5) * 10),
         level: this.data.level + 1,
         answer: "BINGO"
       })
     }
     else {
       this.setData({
-        score: this.data.score - this.data.level * 5,
-        level: this.data.level == 1 ? 1 : this.data.level - 1,
+        score: this.data.score - Math.max(5, Math.ceil(this.data.level / 5) * 5),
+        level: this.data.level == 0 ? 0 : this.data.level - 1,
         lifes: this.data.lifes - 1,
         answer: "BOOM"
       })
     }
+    var ratio = this.data.level == 0 ? 200 : 1000 / this.data.score
+    if (ratio % 1 != 0) ratio = ratio.toFixed(2)
+    else ratio = ratio.toString()
+    this.setData({
+      ratio: ratio
+    })
     console.log(this.data.answer)
     if (this.data.lifes <= 0) {
-      if (this.data.playing) {
-        this.setData({
-          playing: false
-        })
-        audioCtx.close()
-      }
       app.globalData.scoreboard = {
         level: this.data.level,
-        score: this.data.score
+        score: this.data.score,
+        ratio: this.data.ratio
       }
       wx.navigateTo({
         url: '../end/end',
@@ -77,7 +92,6 @@ Page({
     else this.playNotes(this.level)
   },
   playNotes: function (isRetry = false) {
-    if (this.data.playing) audioCtx.close()
     audioCtx = new AudioContext
     amp = audioCtx.createGain()
     amp.gain.value = 0.5
@@ -90,22 +104,21 @@ Page({
     osc1.frequency.setValueAtTime(440, now);
     osc1.onended = this.note1EndCallback
     osc2.frequency.setValueAtTime(440, now + 1.618);
-    osc2.detune.setValueAtTime(direction * 100 / this.data.level, now + 2.236)
+    osc2.detune.setValueAtTime(direction * 100 / this.data.level, now + 1.618)
     osc2.onended = this.note2EndCallback
     osc1.connect(amp)
     osc2.connect(amp)
 
     this.note1StartCallback()
-    setTimeout(this.note2StartCallback, 2236)
+    setTimeout(this.note2StartCallback, 1000)
     osc1.start(now)
-    osc1.stop(now + 1.618)
-    osc2.start(now + 2.236)
-    osc2.stop(now + 3.854)
+    osc1.stop(now + 1)
+    osc2.start(now + 1.618)
+    osc2.stop(now + 2.618)
     console.log(this.data.level, this.data.score, direction, isRetry)
   },
   note1StartCallback: function () {
     this.setData({
-      playing: true,
       note_one_playing: true
     })
   },
@@ -116,7 +129,6 @@ Page({
   },
   note1EndCallback: function () {
     this.setData({
-      playing: false,
       note_one_playing: false
     })
   },
@@ -124,6 +136,5 @@ Page({
     this.setData({
       note_two_playing: false
     })
-    audioCtx.close()
   }
 })

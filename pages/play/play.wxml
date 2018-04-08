@@ -9,6 +9,9 @@
   <view class="lifes">
     <text>Lifes: {{lifes}}</text>
   </view>
+  <view class="ratio">
+    <text>Ratio: {{ratio}}%</text>
+  </view>
   <view class="answer">
     <text wx:if="{{answer}}">{{answer}}</text>
   </view>
