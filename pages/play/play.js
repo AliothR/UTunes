@@ -59,7 +59,7 @@ Page({
       })
     }
     console.log(this.data.answer)
-    if (this.data.lifes == 0) {
+    if (this.data.lifes <= 0) {
       if (this.data.playing) {
         this.setData({
           playing: false
