@@ -1,7 +1,10 @@
 <!--index.wxml-->
 <view class="container">
   <view class="gameover">
-    <text>GAME OVER</text>
+    <text wx:if="{{scoreboard.status=='GO'}}">GAME OVER</text>
+    <block wx:else>
+      <text>GAME CLEAR</text>
+    </block>
   </view> 
   <view class="level">
     <text>Level: {{scoreboard.level}}</text>
@@ -10,8 +13,11 @@
     <text>Score: {{scoreboard.score}}</text>
   </view>
   <view class="ratio">
-    <text>Ratio: {{scoreboard.ratio}}%</text>
-  </view>
+    <text wx:if="{{scoreboard.status=='GO'}}">Ratio: >{{scoreboard.ratio}}%</text>
+    <block wx:else>
+      <text>Ratio: {{char_lt}}{{scoreboard.ratio}}%</text>
+    </block>
+  </view> 
   <view>
     <button bindtap="bindRestartTap">重新开始</button>
   </view>

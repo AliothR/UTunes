@@ -8,7 +8,8 @@ var direction
 Page({
   data: {
     userInfo: null,
-    scoreboard: null
+    scoreboard: null,
+    char_lt: '<'
   },
   bindRestartTap: function () {
     wx.navigateTo({

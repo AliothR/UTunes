@@ -16,11 +16,11 @@
     <text wx:if="{{answer}}">{{answer}}</text>
   </view>
   <view class="select">
-    <button bindtap="bindHighTap">高</button>
-    <button bindtap="bindLowTap">低</button>
+    <button bindtap="bindHighTap" disabled="{{!ready}}">高</button>
+    <button bindtap="bindLowTap" disabled="{{!ready}}">低</button>
   </view>
   <view class="retry">
-    <button bindtap="bindRetryTap" disabled='{{!retry}}'>重听</button>
+    <button bindtap="bindRetryTap" disabled="{{!retry|!ready}}">重听</button>
   </view>
   <view class="playing">
     <text wx:if="{{note_one_playing}}">Note 1 playing</text>

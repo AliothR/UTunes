@@ -1,4 +1,6 @@
 //app.js
+const stdA = wx.createInnerAudioContext()
+
 App({
   onLaunch: function () {
     // 展示本地存储能力
@@ -32,6 +34,8 @@ App({
         }
       }
     })
+    stdA.src = 'http://165.227.29.231/UTunes/mp3s/stdA.mp3'
+    stdA.obeyMuteSwitch = false
   },
   globalData: {
     userInfo: null,
@@ -39,5 +43,7 @@ App({
       level: 0,
       score: 0
     }
-  }
+  },
+  stdA: stdA,
+  
 })
