@@ -16,25 +16,37 @@ Page({
     ready: false,
     retry: false,
     answer: "\n",
-    note_one_playing: false,
-    note_two_playing: false
+    note_one_playing: null,
+    note_two_playing: null,
+    firstTimePlay: false,
+    originX: 0,
+    originY: 0,
+    selectX: 0,
+    selectY: 0,
+    moveDirection: 1,
+    setMoveDirection: true
   },
-  bindHighTap: function () {
+  stopPlay() {
     if (this.data.note_one_playing) stdA.stop()
     else if (this.data.note_two_playing) note.stop()
+    this.setData({
+      note_one_playing: 0,
+      note_two_playing: 0
+    })
+  },
+  selectHigh() {
+    this.stopPlay()
     this.judge(1)
   },
-  bindLowTap: function () {
-    if (this.data.note_one_playing) stdA.stop()
-    else if (this.data.note_two_playing) note.stop()
+  selectLow() {
+    this.stopPlay()
     this.judge(-1)
   },
-  bindRetryTap: function () {
+  selectRetry() {
     this.setData({
       retry: false,
     })
-    if (this.data.note_one_playing) stdA.stop()
-    else if (this.data.note_two_playing) note.stop()
+    this.stopPlay()
     this.playNotes(true)
   },
   onLoad: function () {
@@ -47,82 +59,135 @@ Page({
       ready: false,
       retry: true,
       answer: "\n",
-      note_one_playing: false,
-      note_two_playing: false
+      note_one_playing: 0,
+      note_two_playing: 0
     })
     note.obeyMuteSwitch = false
     stdA.onPlay(() => {
       this.setData({
-        note_one_playing: true
+        note_one_playing: 1
       })
     })
     stdA.onEnded(() => {
       this.setData({
-        note_one_playing: false
+        note_one_playing: 2,
+        selectMove: 1
       })
     })
     stdA.onStop(() => {
       this.setData({
-        note_one_playing: false
+        note_one_playing: 0
       })
     })
     note.onPlay(() => {
       this.setData({
         ready: true,
-        note_two_playing: true
+        note_two_playing: 1
       })
     })
     note.onEnded(() => {
       this.setData({
-        note_two_playing: false
+        note_two_playing: 2
       })
     })
     note.onStop(() => {
       this.setData({
-        note_two_playing: false
+        note_two_playing: 0
       })
     })
     this.playNotes()
   },
+  getOrigin: function(e) {
+    this.setData({
+      originX: e.touches[0].clientX,
+      originY: e.touches[0].clientY
+    })
+  },
+  selectAnswer: function (e) {
+    wx.getSystemInfo({
+      success: res => {
+        var window = {height: res.windowHeight, width: res.windowWidth}
+        this.setData({window: window})
+      }
+    });
+    var dX = e.touches[0].clientX - this.data.originX
+    var dY = e.touches[0].clientY - this.data.originY
+    var window = this.data.window
+    var selectX = (Math.abs(dX) < window.width / 4) ? dX : (window.width / 4 * Math.abs(dX) / dX)
+    var selectY = (Math.abs(dY) < window.height *0.16) ? dY : (window.height * 0.16 * Math.abs(dY) / dY)
+    var moveDirection = this.data.moveDirection
+    if(this.data.setMoveDirection){
+      if (Math.abs(dX) > Math.abs(dY)){moveDirection = 0}
+      else{moveDirection = 1}
+      this.setData({moveDirection: moveDirection, setMoveDirection: false})
+    }
+    if(!moveDirection){selectY = 0}
+    else {selectX = 0}
+    if(this.data.ready){this.setData({selectX: selectX, selectY: selectY})}
+  },
+  clearDirection: function (e) {
+    var window = this.data.window
+    var selectX = this.data.selectX
+    var selectY = this.data.selectY
+    if (selectY < 20 - window.height * 0.16) {
+      this.selectHigh()
+    } else if (selectY > window.height * 0.16 - 20) {
+      this.selectLow()
+    } else if (selectX < 20 - window.width / 4) {
+      this.selectRetry()
+    }
+    this.setData({allTransitionAllow: true})
+    this.setData({
+      selectX: 0,
+      selectY: 0,
+      setMoveDirection: true,
+    })
+  },
   judge: function (answer) {
+    var score = this.data.score
+    var level = this.data.level
+    var lifes = this.data.lifes
     if (direction == answer) {
       this.setData({
-        score: this.data.score + Math.max(10, Math.ceil(this.data.level / 5) * 10),
-        level: this.data.level == MAX_LEVEL ? 'Master' : this.data.level + 1,
+        score: score + Math.max(10, Math.ceil(level / 5) * 10),
+        level: level == MAX_LEVEL ? 'Master' : level + 1,
         answer: "BINGO"
       })
     }
     else {
       this.setData({
-        score: Math.max(0, this.data.score - Math.max(5, Math.ceil(this.data.level / 5) * 5)),
-        level: this.data.lifes > 1 ? Math.max(0, this.data.level - 1) : this.data.level,
-        lifes: this.data.lifes - 1,
+        score: Math.max(0, score - Math.max(5, Math.ceil(level / 5) * 5)),
+        level: lifes > 1 ? Math.max(0, level - 1) : level,
+        lifes: lifes - 1,
         answer: "BOOM"
       })
     }
     this.setData({
-      ratio: this.ratio_chart[this.data.level == 'Master' ? MAX_LEVEL : this.data.level]
+      ratio: this.ratio_chart[level == 'Master' ? MAX_LEVEL : level],
     })
     console.log(this.data.answer)
-    if (this.data.lifes <= 0 || this.data.level == 'Master') {
+    if (lifes <= 0 || level == 'Master') {
       this.setData({
         ready: false
       })
       app.globalData.scoreboard = {
-        status: this.data.lifes <= 0 ? 'GO' : 'GC',
-        level: this.data.level,
-        score: this.data.score,
+        status: lifes <= 0 ? 'GO' : 'GC',
+        level: level,
+        score: score,
         ratio: this.data.ratio
       }
       wx.navigateTo({
         url: '../end/end',
       })
     }
-    else this.playNotes(this.level)
+    else{
+      setTimeout(this.playNotes,600)
+    }
   },
   playNotes: function (isRetry = false) {
     this.setData({
-      ready: false
+      ready: false,
+      selectMove: 0
     })
     if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
     console.log(this.data.level, this.data.score, direction, isRetry)

@@ -1,4 +1,13 @@
 /**app.wxss**/
+@import "iconfont.wxss";
+@import "akvo.wxss";
+
+page{
+  background-color:rgba(46,184,142,1);
+}
+text{
+  color:white;
+}
 .container {
   height: 100%;
   display: flex;

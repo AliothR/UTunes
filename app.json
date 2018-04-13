@@ -6,9 +6,10 @@
     "pages/end/end"
   ],
   "window":{
+	"enablePullDownRefresh": false,
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle": "black"
+    "navigationBarBackgroundColor": "#2eb88e",
+    "navigationBarTitleText": "UTunes",
+    "navigationBarTextStyle": "white"
   }
 }

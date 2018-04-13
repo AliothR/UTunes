@@ -12,6 +12,14 @@
 	"appid": "wx5a7dbd4b8fd5f553",
 	"projectname": "UTunes",
 	"isGameTourist": false,
+	"packOptions": {
+		"ignore": [
+			{
+				"type": "folder",
+				"value": "test/"
+			}
+		]
+	},
 	"condition": {
 		"search": {
 			"current": -1,
@@ -29,13 +37,5 @@
 			"current": -1,
 			"list": []
 		}
-	},
-  "packOptions": {
-    "ignore": [
-      {
-        "type": "folder",
-        "value": "test/"
-      }
-    ]
-  }
+	}
 }

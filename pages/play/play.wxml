@@ -1,31 +1,45 @@
 <!--index.wxml-->
+<view class="navigator">
+  <view class="navigator-left">
+   <view class="ratio">
+     <text>{{ratio}}% of a half step</text>
+   </view>
+   <view class="level">
+     <text class="level-text">Level</text><text class="level-number">{{level}}</text>
+     <text wx:if="{{firstTimePlay}}">关卡</text>
+   </view>
+  </view>
+  <view class="navigator-right">
+   <view class="life">
+     <i class="iconfont icon-musicnote life-{{lifes>=1}}"></i>
+     <i class="iconfont icon-musicnote life-{{lifes>=2}}"></i>
+     <i class="iconfont icon-musicnote life-{{lifes>=3}}"></i>
+     <text wx:if="{{firstTimePlay}}">生命</text>
+   </view>
+  </view>
+</view>
 <view class="container">
-  <view class="level">
-    <text>Level: {{level}}</text>
-  </view>
-  <view class="score">
-    <text>Score: {{score}}</text>
-  </view>
-  <view class="lifes">
-    <text>Lifes: {{lifes}}</text>
-  </view>
-  <view class="ratio">
-    <text>Ratio: {{ratio}}%</text>
-  </view>
+   <view class="score">
+     <text>{{score}}</text>
+     <text wx:if="{{firstTimePlay}}">分数</text>
+   </view>
   <view class="answer">
-    <text wx:if="{{answer}}">{{answer}}</text>
-  </view>
-  <view class="select">
-    <button bindtap="bindHighTap" disabled="{{!ready}}">高</button>
-    <button bindtap="bindLowTap" disabled="{{!ready}}">低</button>
-  </view>
-  <view class="retry">
-    <button bindtap="bindRetryTap" disabled="{{!retry|!ready}}">重听</button>
-  </view>
-  <view class="playing">
-    <text wx:if="{{note_one_playing}}">Note 1 playing</text>
-    <block wx:else>
-      <text wx:if="{{note_two_playing}}">Note 2 playing</text>
-    </block>
+    <view class="selection select-high first-time-play-{{firstTimePlay}}">
+      <i class="icon iconfont icon-treble-clef"></i>
+    </view>
+    <view class="select select-move-{{selectMove}}">
+      <view class="first-note play-{{note_one_playing}} first-play-{{note_one_playing}}">
+       <i class="icon iconfont icon-iosmusicalnote"></i>
+      </view>
+      <view class="second-note play-{{note_two_playing}} second-play-{{note_two_playing}} all-transition-allow-{{allTransitionAllow}}"  bindtouchstart="getOrigin" bindtouchmove='selectAnswer' bindtouchend="clearDirection" style="position:relative;transform:translate({{selectX}}px,{{selectY}}px)">
+        <i class="icon iconfont .icon-iosmusicalnotes"></i>
+      <view class="retry retry-{{note_two_playing}}">
+        <view bindtap="bindRetryTap" class="first-time-play-{{firstTimePlay}}"></view>
+      </view>
+      </view>
+    </view>
+    <view class="selection select-low first-time-play-{{firstTimePlay}}">
+      <i class="icon iconfont icon-bass-clef"></i>
+    </view>
   </view>
 </view>
