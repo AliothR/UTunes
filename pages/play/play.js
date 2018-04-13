@@ -5,33 +5,33 @@ var direction = null
 const stdA = app.stdA
 const note = wx.createInnerAudioContext()
 const MAX_LEVEL = 30
+var ready = false
+var retry = true
+var originX = 0
+var originY = 0
+var moveDirection = 1
+var setMoveDirection = true
+var window
 
 Page({
   data: {
-    userInfo: null,
     score: 0,
     level: 0,
     lifes: 0,
     ratio: 0,
-    ready: false,
-    retry: false,
-    answer: "\n",
-    note_one_playing: null,
-    note_two_playing: null,
+    noteOnePlaying: null,
+    noteTwoPlaying: null,
     firstTimePlay: false,
-    originX: 0,
-    originY: 0,
     selectX: 0,
     selectY: 0,
-    moveDirection: 1,
-    setMoveDirection: true
+    allowAllTransitions: false
   },
   stopPlay() {
-    if (this.data.note_one_playing) stdA.stop()
-    else if (this.data.note_two_playing) note.stop()
+    if (this.data.noteOnePlaying) stdA.stop()
+    else if (this.data.noteTwoPlaying) note.stop()
     this.setData({
-      note_one_playing: 0,
-      note_two_playing: 0
+      noteOnePlaying: 0,
+      noteTwoPlaying: 0
     })
   },
   selectHigh() {
@@ -51,82 +51,76 @@ Page({
   },
   onLoad: function () {
     this.setData({
-      userInfo: app.globalData.userInfo,
       score: 10,
       level: 1,
       lifes: 3,
-      ratio: this.ratio_chart[1],
-      ready: false,
-      retry: true,
-      answer: "\n",
-      note_one_playing: 0,
-      note_two_playing: 0
+      ratio: 100,
+      noteOnePlaying: false,
+      noteTwoPlaying: false,
+      firstTimePlay: false,
+      selectX: 0,
+      selectY: 0,
+      allowAllTransitions: false
     })
+    wx.getSystemInfo({
+      success: res => {
+        window = { height: res.windowHeight, width: res.windowWidth }
+      }
+    });
     note.obeyMuteSwitch = false
     stdA.onPlay(() => {
       this.setData({
-        note_one_playing: 1
+        noteOnePlaying: 1
       })
     })
     stdA.onEnded(() => {
       this.setData({
-        note_one_playing: 2,
+        noteOnePlaying: 2,
         selectMove: 1
       })
     })
     stdA.onStop(() => {
       this.setData({
-        note_one_playing: 0
+        noteOnePlaying: 0
       })
     })
     note.onPlay(() => {
       this.setData({
         ready: true,
-        note_two_playing: 1
+        noteTwoPlaying: 1
       })
     })
     note.onEnded(() => {
       this.setData({
-        note_two_playing: 2
+        noteTwoPlaying: 2
       })
     })
     note.onStop(() => {
       this.setData({
-        note_two_playing: 0
+        noteTwoPlaying: 0
       })
     })
     this.playNotes()
   },
   getOrigin: function(e) {
-    this.setData({
-      originX: e.touches[0].clientX,
-      originY: e.touches[0].clientY
-    })
+    originX = e.touches[0].clientX
+    originY = e.touches[0].clientY
   },
   selectAnswer: function (e) {
-    wx.getSystemInfo({
-      success: res => {
-        var window = {height: res.windowHeight, width: res.windowWidth}
-        this.setData({window: window})
-      }
-    });
-    var dX = e.touches[0].clientX - this.data.originX
-    var dY = e.touches[0].clientY - this.data.originY
-    var window = this.data.window
+    var dX = e.touches[0].clientX - originX
+    var dY = e.touches[0].clientY - originY
     var selectX = (Math.abs(dX) < window.width / 4) ? dX : (window.width / 4 * Math.abs(dX) / dX)
     var selectY = (Math.abs(dY) < window.height *0.16) ? dY : (window.height * 0.16 * Math.abs(dY) / dY)
-    var moveDirection = this.data.moveDirection
-    if(this.data.setMoveDirection){
-      if (Math.abs(dX) > Math.abs(dY)){moveDirection = 0}
-      else{moveDirection = 1}
-      this.setData({moveDirection: moveDirection, setMoveDirection: false})
+    if(setMoveDirection){
+      if (Math.abs(dX) > Math.abs(dY)) moveDirection = 0
+      else moveDirection = 1
+      setMoveDirection = false
     }
-    if(!moveDirection){selectY = 0}
-    else {selectX = 0}
-    if(this.data.ready){this.setData({selectX: selectX, selectY: selectY})}
+    if(!moveDirection) selectY = 0
+    else selectX = 0
+    /*if(ready) */this.setData({selectX: selectX, selectY: selectY})
   },
   clearDirection: function (e) {
-    var window = this.data.window
     var selectX = this.data.selectX
     var selectY = this.data.selectY
     if (selectY < 20 - window.height * 0.16) {
@@ -136,11 +130,11 @@ Page({
     } else if (selectX < 20 - window.width / 4) {
       this.selectRetry()
     }
-    this.setData({allTransitionAllow: true})
+    this.setData({ allowAllTransitions: true })
+    setMoveDirection = true
     this.setData({
       selectX: 0,
-      selectY: 0,
-      setMoveDirection: true,
+      selectY: 0
     })
   },
   judge: function (answer) {
@@ -163,7 +157,7 @@ Page({
       })
     }
     this.setData({
-      ratio: this.ratio_chart[level == 'Master' ? MAX_LEVEL : level],
+      ratio: this.ratioChart[level == 'Master' ? MAX_LEVEL : level],
     })
     console.log(this.data.answer)
     if (lifes <= 0 || level == 'Master') {
@@ -181,12 +175,12 @@ Page({
       })
     }
     else{
-      setTimeout(this.playNotes,600)
+      setTimeout(this.playNotes, 618)
     }
   },
   playNotes: function (isRetry = false) {
+    ready = false
     this.setData({
-      ready: false,
       selectMove: 0
     })
     if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
@@ -201,7 +195,7 @@ Page({
       }, 1618)
     }, 618)  
   },
-  ratio_chart: [
+  ratioChart: [
     200.00,
     100.00,
     50.00,

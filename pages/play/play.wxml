@@ -28,13 +28,13 @@
       <i class="icon iconfont icon-treble-clef"></i>
     </view>
     <view class="select select-move-{{selectMove}}">
-      <view class="first-note play-{{note_one_playing}} first-play-{{note_one_playing}}">
+      <view class="first-note play-{{noteOnePlaying}} first-play-{{noteOnePlaying}}">
        <i class="icon iconfont icon-iosmusicalnote"></i>
       </view>
-      <view class="second-note play-{{note_two_playing}} second-play-{{note_two_playing}} all-transition-allow-{{allTransitionAllow}}"  bindtouchstart="getOrigin" bindtouchmove='selectAnswer' bindtouchend="clearDirection" style="position:relative;transform:translate({{selectX}}px,{{selectY}}px)">
+      <view class="second-note play-{{noteTwoPlaying}} second-play-{{noteTwoPlaying}} allow-all-transitions-{{allowAllTransitions}}"  bindtouchstart="getOrigin" bindtouchmove='selectAnswer' bindtouchend="clearDirection" style="position:relative;transform:translate({{selectX}}px,{{selectY}}px)">
         <i class="icon iconfont .icon-iosmusicalnotes"></i>
-      <view class="retry retry-{{note_two_playing}}">
-        <view bindtap="bindRetryTap" class="first-time-play-{{firstTimePlay}}"></view>
+      <view class="retry retry-{{noteTwoPlaying}}">
+        <view bindtap="bind Tap" class="first-time-play-{{firstTimePlay}}"></view>
       </view>
       </view>
     </view>
