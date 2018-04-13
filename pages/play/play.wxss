@@ -61,7 +61,7 @@ page{
   font-size:36px;
   transition: opacity 0.25s ease;
 }
- @keyframes shake{
+@keyframes shake{
   0%{transform:translateZ(0);opacity:1}
   10%{transform:translate3d(-1rpx,0,0);opacity:1}
   20%{transform:translate3d(2rpx,0,0);opacity:1}
@@ -139,7 +139,7 @@ page{
   background-color:rgba(255,255,255,0);
   box-shadow:0 0px 0px 0 rgba(0,0,0,.16), 0 0px 0px 0 rgba(0,0,0,.12);
   opacity: 0;
-  transition-property:height,padding,margin,colo,background-color,box-shadow,opacity;
+  transition-property: height, padding, margin, colo, background-color, box-shadow, opacity;
   transition-duration: 0.5s;
   transition-timing-function: ease;
 }
@@ -155,8 +155,8 @@ page{
 .second-play-2{
   opacity: 1;
   padding: 2.5vh;
-  margin:-2.5vh;
-  background-color:rgba(255,255,255,1);
+  margin: -2.5vh;
+  background-color: rgba(255,255,255,1);
   color: rgba(0,255,181,1);
 }
 .allow-all-transition-true{
