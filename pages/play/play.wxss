@@ -159,6 +159,6 @@ page{
   background-color:rgba(255,255,255,1);
   color: rgba(0,255,181,1);
 }
-.all-transition-allow-true{
+.allow-all-transition-true{
   transition: all 0.4s ease;
 }
