@@ -142,24 +142,21 @@ Page({
     var level = this.data.level
     var lifes = this.data.lifes
     if (direction == answer) {
-      this.setData({
-        score: score + Math.max(10, Math.ceil(level / 5) * 10),
-        level: level == MAX_LEVEL ? 'Master' : level + 1,
-        answer: "BINGO"
-      })
+      score += Math.max(10, Math.ceil(level / 5) * 10)
+      level = level == MAX_LEVEL ? 'Master' : level + 1
     }
     else {
-      this.setData({
-        score: Math.max(0, score - Math.max(5, Math.ceil(level / 5) * 5)),
-        level: lifes > 1 ? Math.max(0, level - 1) : level,
-        lifes: lifes - 1,
-        answer: "BOOM"
-      })
+      score = Math.max(0, score - Math.max(10, Math.ceil(level / 5) * 5))
+      level = lifes > 1 ? Math.max(0, level - 1) : level
+      lifes = lifes - 1
     }
     this.setData({
+      score: score,
+      level: level,
+      lifes: lifes,
       ratio: this.ratioChart[level == 'Master' ? MAX_LEVEL : level],
     })
-    console.log(this.data.answer)
+    console.log(this.data.answer, this.data.lifes)
     if (lifes <= 0 || level == 'Master') {
       this.setData({
         ready: false
