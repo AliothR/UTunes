@@ -31,8 +31,8 @@ Page({
     if (this.data.noteOnePlaying) stdA.stop()
     if (this.data.noteTwoPlaying) note.stop()
     this.setData({
-      noteOnePlaying: 0,
-      noteTwoPlaying: 0
+      noteOnePlaying: false,
+      noteTwoPlaying: false
     })
   },
   selectHigh() {
@@ -137,7 +137,7 @@ Page({
       lifes: lifes,
       ratio: this.ratioChart[level == 'Master' ? MAX_LEVEL : level],
     })
-    console.log(this.data.answer, this.data.lifes)
+    console.log(this.data.lifes)
     if (lifes <= 0 || level == 'Master') {
       this.setData({
         ready: false

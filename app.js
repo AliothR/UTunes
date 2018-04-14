@@ -45,6 +45,5 @@ App({
       score: 0
     }
   },
-  stdA: stdA,
-  
+  stdA: stdA
 })

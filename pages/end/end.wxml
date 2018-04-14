@@ -18,6 +18,9 @@
       <text>Ratio: {{char_lt}}{{scoreboard.ratio}}%</text>
     </block>
   </view> 
+  <view class="review">
+    <text>{{review}}</text>
+  </view>
   <view>
     <button bindtap="bindRestartTap">重新开始</button>
   </view>
