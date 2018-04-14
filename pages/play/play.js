@@ -12,6 +12,7 @@ var originY = 0
 var moveDirection = 1
 var setMoveDirection = true
 var window
+var lastRenderTime = new Date().getTime()
 
 Page({
   data: {
@@ -68,49 +69,25 @@ Page({
       }
     });
     note.obeyMuteSwitch = false
-    stdA.onPlay(() => {
-      this.setData({
-        noteOnePlaying: 1
-      })
-    })
-    stdA.onEnded(() => {
-      this.setData({
-        noteOnePlaying: 2,
-        selectMove: 1
-      })
-    })
-    stdA.onStop(() => {
-      this.setData({
-        noteOnePlaying: 0
-      })
-    })
-    note.onPlay(() => {
-      this.setData({
-        ready: true,
-        noteTwoPlaying: 1
-      })
-    })
-    note.onEnded(() => {
-      this.setData({
-        noteTwoPlaying: 2
-      })
-    })
-    note.onStop(() => {
-      this.setData({
-        noteTwoPlaying: 0
-      })
-    })
+    stdA.onPlay(() => {this.setData({noteOnePlaying: 1})})
+    stdA.onEnded(() => {this.setData({noteOnePlaying: 2,selectMove: 1})})
+    stdA.onStop(() => {this.setData({noteOnePlaying: 0})})
+    note.onPlay(() => {this.setData({ready: true,noteTwoPlaying: 1})})
+    note.onEnded(() => {this.setData({noteTwoPlaying: 2})})
+    note.onStop(() => {this.setData({noteTwoPlaying: 0})})
     this.playNotes()
   },
   getOrigin: function(e) {
     originX = e.touches[0].clientX
     originY = e.touches[0].clientY
+    this.setData({ allowAllTransitions: false })
   },
   selectAnswer: function (e) {
     var dX = e.touches[0].clientX - originX
     var dY = e.touches[0].clientY - originY
     var selectX = (Math.abs(dX) < window.width / 4) ? dX : (window.width / 4 * Math.abs(dX) / dX)
     var selectY = (Math.abs(dY) < window.height *0.16) ? dY : (window.height * 0.16 * Math.abs(dY) / dY)
+    var renderInterval = new Date().getTime() - lastRenderTime
     if(setMoveDirection){
       if (Math.abs(dX) > Math.abs(dY)) moveDirection = 0
       else moveDirection = 1
@@ -118,7 +95,11 @@ Page({
     }
     if(!moveDirection) selectY = 0
     else selectX = 0
-    /*if(ready) */this.setData({selectX: selectX, selectY: selectY})
+    /*if(ready) */
+    if(renderInterval > 10){
+      this.setData({selectX: selectX, selectY: selectY})
+      lastRenderTime = lastRenderTime + renderInterval
+    }
   },
   clearDirection: function (e) {
     var selectX = this.data.selectX
@@ -167,7 +148,7 @@ Page({
         score: score,
         ratio: this.data.ratio
       }
-      wx.navigateTo({
+      wx.redirectTo({
         url: '../end/end',
       })
     }
