@@ -25,14 +25,15 @@ Page({
     firstTimePlay: false,
     selectX: 0,
     selectY: 0,
-    allowAllTransitions: false
+    allowAllTransitions: false,
+    answerMatch: {right: 0,wrong: 0,none: 1}
   },
   stopPlay() {
     if (this.data.noteOnePlaying) stdA.stop()
     if (this.data.noteTwoPlaying) note.stop()
     this.setData({
-      noteOnePlaying: false,
-      noteTwoPlaying: false
+      noteOnePlaying: 2,
+      noteTwoPlaying: 2,
     })
   },
   selectHigh() {
@@ -56,8 +57,8 @@ Page({
       level: 1,
       lifes: 3,
       ratio: 100,
-      noteOnePlaying: false,
-      noteTwoPlaying: false,
+      noteOnePlaying: 0,
+      noteTwoPlaying: 0,
       firstTimePlay: false,
       selectX: 0,
       selectY: 0,
@@ -72,13 +73,11 @@ Page({
     note.obeyMuteSwitch = false
     stdA.onPlay(() => {this.setData({noteOnePlaying: 1})})
     stdA.onEnded(() => {this.setData({noteOnePlaying: 2,selectMove: 1})})
-    stdA.onStop(() => {this.setData({noteOnePlaying: 0})})
     note.onPlay(() => {
       this.setData({ready: true,noteTwoPlaying: 1})
       ready = true
     })
     note.onEnded(() => {this.setData({noteTwoPlaying: 2})})
-    note.onStop(() => {this.setData({noteTwoPlaying: 0})})
     this.playNotes()
   },
   getOrigin: function(e) {
@@ -106,6 +105,16 @@ Page({
       }
     }
   },
+  clearMove(){
+    this.setData({
+      selectX: 0,
+      selectY: 0,
+      originX: 0,
+      originY: 0,
+      noteOnePlaying: 0,
+      noteTwoPlaying: 0
+    })
+  },
   clearDirection: function (e) {
     var selectX = this.data.selectX
     var selectY = this.data.selectY
@@ -118,25 +127,35 @@ Page({
     }
     this.setData({ allowAllTransitions: true })
     setMoveDirection = true
-    this.setData({
-      selectX: 0,
-      selectY: 0
-    })
+    if (this.data.answerMatch.none) {
+      this.clearMove()
+      console.log()
+    }
+    else if(this.data.answerMatch.right) {
+      setTimeout(this.clearMove, 200)
+    }
+    else{
+      setTimeout(this.clearMove, 400)
+    }
   },
   judge: function (answer) {
     var score = this.data.score
     var level = this.data.level
     var lifes = this.data.lifes
+    var answerMatch = { right: 0,wrong: 0,none: 0}
     if (direction == answer) {
+      answerMatch.right = 1
       score += Math.max(10, Math.ceil(level / 5) * 10)
       level = level == MAX_LEVEL ? 'Master' : level + 1
     }
     else {
+      answerMatch.wrong = 1
       score = Math.max(0, score - Math.max(10, Math.ceil(level / 5) * 5))
       level = lifes > 1 ? Math.max(0, level - 1) : level
       lifes = lifes - 1
     }
     this.setData({
+      answerMatch: answerMatch,
       score: score,
       level: level,
       lifes: lifes,
@@ -158,15 +177,17 @@ Page({
       })
     }
     else{
-      setTimeout(this.playNotes, 618)
+      setTimeout(this.playNotes, 618 + answerMatch.right * 100 + answerMatch.wrong * 200)
     }
   },
   playNotes: function (isRetry = false) {
+    var answerMatch = { right: 0,wrong: 0,none: 1 }
     ready = false
     this.setData({
       noteOnePlaying: 0,
       noteTwoPlaying: 0,
-      selectMove: 0
+      selectMove: 0,
+      answerMatch: answerMatch
     })
     if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
     console.log(this.data.level, this.data.score, direction, isRetry)

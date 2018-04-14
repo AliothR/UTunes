@@ -31,8 +31,10 @@
       <view class="first-note play-{{noteOnePlaying}} first-play-{{noteOnePlaying}}">
        <i class="icon iconfont icon-iosmusicalnote"></i>
       </view>
-      <view class="second-note play-{{noteTwoPlaying}} second-play-{{noteTwoPlaying}} allow-all-transitions-{{allowAllTransitions}}"  bindtouchstart="getOrigin" bindtouchmove='selectAnswer' bindtouchend="clearDirection" style="position:relative;transform:translate({{selectX}}px,{{selectY}}px)">
-        <i class="icon iconfont .icon-iosmusicalnotes"></i>
+      <view class="second-note play-{{noteTwoPlaying}} second-play-{{noteTwoPlaying}} allow-all-transitions-{{allowAllTransitions}} answer-wrong-{{answerMatch.wrong}}"  bindtouchstart="getOrigin" bindtouchmove='selectAnswer' bindtouchend="clearDirection" style="position:relative;transform:translate({{selectX}}px,{{selectY}}px)">
+        <i class="icon iconfont icon-answer icon-iosmusicalnotes" style="opacity:{{answerMatch.none}}"></i>
+        <i class="icon iconfont icon-answer icon-right" style="opacity:{{answerMatch.right}}"></i>
+        <i class="icon iconfont icon-answer icon-wrong" style="opacity:{{answerMatch.wrong}}"></i>
       <view class="retry retry-{{noteTwoPlaying}}">
         <view bindtap="bind Tap" class="first-time-play-{{firstTimePlay}}"></view>
       </view>

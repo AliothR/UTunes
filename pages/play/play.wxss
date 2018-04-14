@@ -1,4 +1,22 @@
 /**play.wxss**/
+@keyframes life-loose{
+  0%{transform:translateZ(0);opacity:1}
+  10%{transform:translate3d(-1rpx,0,0);opacity:1}
+  20%{transform:translate3d(2rpx,0,0);opacity:1}
+  30%{transform:translate3d(-4rpx,0,0);opacity:1}
+  40%{transform:translate3d(6rpx,0,0);opacity:1}
+  50%{transform:translate3d(-8rpx,0,0);opacity:1}
+  60%{transform:translate3d(11rpx,0,0);opacity:1}
+  70%{transform:translate3d(-16rpx,0,0);opacity:1}
+  80%{transform:translate3d(22rpx,0,0);opacity:1}
+  90%{transform:translate3d(-9rpx,0,0);opacity:0.625}
+  100%{transform:translate3d(0);opacity:0.25}
+}
+@keyframes wrong{
+  0%,100%{left:0rpx}
+  20%,60%{left:-10rpx}
+  40%,80%{left:10rpx}
+}
 .navigator, .container{
   transition:opacity 0.25s ease;
 }
@@ -61,21 +79,8 @@ page{
   font-size:36px;
   transition: opacity 0.25s ease;
 }
-@keyframes shake{
-  0%{transform:translateZ(0);opacity:1}
-  10%{transform:translate3d(-1rpx,0,0);opacity:1}
-  20%{transform:translate3d(2rpx,0,0);opacity:1}
-  30%{transform:translate3d(-4rpx,0,0);opacity:1}
-  40%{transform:translate3d(6rpx,0,0);opacity:1}
-  50%{transform:translate3d(-8rpx,0,0);opacity:1}
-  60%{transform:translate3d(11rpx,0,0);opacity:1}
-  70%{transform:translate3d(-16rpx,0,0);opacity:1}
-  80%{transform:translate3d(22rpx,0,0);opacity:1}
-  90%{transform:translate3d(-9rpx,0,0);opacity:0.625}
-  100%{transform:translate3d(0);opacity:0.25}
-}
 .life-false{
-  animation-name:shake;
+  animation-name:life-loose;
   animation-duration: 0.75s;
   opacity:0.25;
 }
@@ -114,9 +119,17 @@ page{
   font-size: 5vh;
   line-height: 5vh;
 }
-.icon-iosmusicalnote, .icon-iosmusicalnotes{
+.icon-iosmusicalnote, .icon-answer{
   font-size:10vh;
   line-height: 10vh;
+}
+.icon-answer{
+  transition:opcatiy 0.2s ease;
+  position:absolute;
+}
+.answer-wrong-1{
+  animation-name: wrong;
+  animation-duration: 0.2s;
 }
 .select{
   display:flex;
