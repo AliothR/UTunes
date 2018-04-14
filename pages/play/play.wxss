@@ -130,6 +130,12 @@ page{
 .select-move-1{
   transform: translate(-7.5vh,0);
 }
+.selection{
+  z-index: -1;
+}
+.answer{
+  z-index: 1;
+}
 .first-note, .second-note{
   height:10vh;
   width:10vh;
@@ -159,6 +165,6 @@ page{
   background-color: rgba(255,255,255,1);
   color: rgba(0,255,181,1);
 }
-.allow-all-transition-true{
+.allow-all-transitions-true{
   transition: all 0.4s ease;
 }
