@@ -13,6 +13,7 @@ var moveDirection = 1
 var setMoveDirection = true
 var window
 var lastRenderTime = new Date().getTime()
+var selectDown = false
 
 Page({
   data: {
@@ -37,19 +38,23 @@ Page({
     })
   },
   selectHigh() {
+    selectDown = true
     this.stopPlay()
     this.judge(1)
   },
   selectLow() {
+    selectDown = true
     this.stopPlay()
     this.judge(-1)
   },
   selectRetry() {
+    selectDown = true
     this.setData({
       retry: false,
     })
     this.stopPlay()
     this.playNotes(true)
+    selectDown = false
   },
   onLoad: function () {
     this.setData({
@@ -111,9 +116,13 @@ Page({
       selectY: 0,
       originX: 0,
       originY: 0,
-      noteOnePlaying: 0,
-      noteTwoPlaying: 0
     })
+    if (selectDown){
+      this.setData({
+        noteOnePlaying: 0,
+        noteTwoPlaying: 0
+      })
+    }
   },
   clearDirection: function (e) {
     var selectX = this.data.selectX
@@ -183,6 +192,7 @@ Page({
   playNotes: function (isRetry = false) {
     var answerMatch = { right: 0,wrong: 0,none: 1 }
     ready = false
+    selectDown = false
     this.setData({
       noteOnePlaying: 0,
       noteTwoPlaying: 0,
