@@ -61,7 +61,8 @@ Page({
       firstTimePlay: false,
       selectX: 0,
       selectY: 0,
-      allowAllTransitions: false
+      allowAllTransitions: false,
+      selectMove: 0
     })
     wx.getSystemInfo({
       success: res => {
@@ -72,7 +73,10 @@ Page({
     stdA.onPlay(() => {this.setData({noteOnePlaying: 1})})
     stdA.onEnded(() => {this.setData({noteOnePlaying: 2,selectMove: 1})})
     stdA.onStop(() => {this.setData({noteOnePlaying: 0})})
-    note.onPlay(() => {this.setData({ready: true,noteTwoPlaying: 1})})
+    note.onPlay(() => {
+      this.setData({ready: true,noteTwoPlaying: 1})
+      ready = true
+    })
     note.onEnded(() => {this.setData({noteTwoPlaying: 2})})
     note.onStop(() => {this.setData({noteTwoPlaying: 0})})
     this.playNotes()
@@ -83,22 +87,23 @@ Page({
     this.setData({ allowAllTransitions: false })
   },
   selectAnswer: function (e) {
-    var dX = e.touches[0].clientX - originX
-    var dY = e.touches[0].clientY - originY
-    var selectX = (Math.abs(dX) < window.width / 4) ? dX : (window.width / 4 * Math.abs(dX) / dX)
-    var selectY = (Math.abs(dY) < window.height *0.16) ? dY : (window.height * 0.16 * Math.abs(dY) / dY)
-    var renderInterval = new Date().getTime() - lastRenderTime
-    if(setMoveDirection){
-      if (Math.abs(dX) > Math.abs(dY)) moveDirection = 0
-      else moveDirection = 1
-      setMoveDirection = false
-    }
-    if(!moveDirection) selectY = 0
-    else selectX = 0
-    /*if(ready) */
-    if(renderInterval > 10){
-      this.setData({selectX: selectX, selectY: selectY})
-      lastRenderTime = lastRenderTime + renderInterval
+    if (ready) {
+      var renderInterval = new Date().getTime() - lastRenderTime
+      if (renderInterval > 10) {
+        var dX = e.touches[0].clientX - originX
+        var dY = e.touches[0].clientY - originY
+        var selectX = (Math.abs(dX) < window.width / 4) ? dX : (window.width / 4 * Math.abs(dX) / dX)
+        var selectY = (Math.abs(dY) < window.height * 0.16) ? dY : (window.height * 0.16 * Math.abs(dY) / dY)
+        if (setMoveDirection) {
+          if (Math.abs(dX) > Math.abs(dY)) moveDirection = 0
+          else moveDirection = 1
+          setMoveDirection = false
+        }
+        if (!moveDirection) selectY = 0
+        else selectX = 0
+        this.setData({ selectX: selectX, selectY: selectY })
+        lastRenderTime = lastRenderTime + renderInterval
+      }
     }
   },
   clearDirection: function (e) {
@@ -159,6 +164,8 @@ Page({
   playNotes: function (isRetry = false) {
     ready = false
     this.setData({
+      noteOnePlaying: 0,
+      noteTwoPlaying: 0,
       selectMove: 0
     })
     if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
