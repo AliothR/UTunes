@@ -22,4 +22,7 @@ Page({
       scoreboard: app.globalData.scoreboard
     })
   },
+  results: {
+    
+  }
 })

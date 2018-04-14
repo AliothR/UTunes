@@ -28,7 +28,7 @@ Page({
   },
   stopPlay() {
     if (this.data.noteOnePlaying) stdA.stop()
-    else if (this.data.noteTwoPlaying) note.stop()
+    if (this.data.noteTwoPlaying) note.stop()
     this.setData({
       noteOnePlaying: 0,
       noteTwoPlaying: 0
@@ -167,7 +167,7 @@ Page({
         score: score,
         ratio: this.data.ratio
       }
-      wx.navigateTo({
+      wx.redirectTo({
         url: '../end/end',
       })
     }
