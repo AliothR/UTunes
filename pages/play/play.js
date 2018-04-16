@@ -159,7 +159,7 @@ Page({
     }
     else {
       answerMatch.wrong = 1
-      score = Math.max(0, score - Math.max(10, Math.ceil(level / 5) * 5))
+      score = Math.max(0, score - Math.max(5, Math.ceil(level / 5) * 5))
       level = lifes > 1 ? Math.max(0, level - 1) : level
       lifes = lifes - 1
     }
@@ -172,13 +172,10 @@ Page({
     })
     console.log(this.data.lifes)
     if (lifes <= 0 || level == 'Master') {
-      this.setData({
-        ready: false
-      })
       app.globalData.scoreboard = {
         status: lifes <= 0 ? 'GO' : 'GC',
         level: level,
-        score: score,
+        score: level == 'Master' ? score + 50 : score,
         ratio: this.data.ratio
       }
       wx.redirectTo({
