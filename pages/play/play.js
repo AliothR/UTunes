@@ -77,18 +77,21 @@ Page({
       pageOpacity: 1 - this.data.pageOpacity
     })
   },
-  onUnload: function (){
+  onLoad: function () {
+    if (!app.globalData.firstTimePlay) {
+      this.start()
+    }
+  },
+  onUnload: function () {
     this.stopPlay()
     retry = true
     this.triggerPageOpacity()
   },
-  onShow: function (){
+  onShow: function () {
     setTimeout(this.triggerPageOpacity,250)
   },
-  onLoad: function () {
-    if(!app.globalData.firstTimePlay){
-      this.start()
-    }
+  onHide: function () {
+    
   },
   start() {
     this.setData({
