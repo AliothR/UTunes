@@ -23,11 +23,18 @@ Page({
     ratio: 0,
     noteOnePlaying: null,
     noteTwoPlaying: null,
-    firstTimePlay: false,
+    firstTimePlay: true,
     selectX: 0,
     selectY: 0,
     allowAllTransitions: false,
-    answerMatch: {right: 0,wrong: 0,none: 1}
+    answerMatch: {right: 0,wrong: 0,none: 1},
+    pageOpacity: 0
+  },
+  clearFirstTimePlay(){
+    this.setData({
+      firstTimePlay: false
+    })
+    this.start()
   },
   stopPlay() {
     if (this.data.noteOnePlaying) stdA.stop()
@@ -56,7 +63,24 @@ Page({
     this.playNotes(true)
     selectDown = false
   },
+  triggerPageOpacity() {
+    this.setData({
+      pageOpacity: 1 - this.data.pageOpacity
+    })
+  },
+  onUnload: function (){
+    this.stopPlay()
+    this.triggerPageOpacity()
+  },
+  onShow: function (){
+    setTimeout(this.triggerPageOpacity,250)
+  },
   onLoad: function () {
+    if(!this.data.firstTimePlay){
+      this.start()
+    }
+  },
+  start() {
     this.setData({
       score: 10,
       level: 1,
@@ -76,14 +100,14 @@ Page({
       }
     });
     note.obeyMuteSwitch = false
-    stdA.onPlay(() => {this.setData({noteOnePlaying: 1})})
-    stdA.onEnded(() => {this.setData({noteOnePlaying: 2,selectMove: 1})})
+    stdA.onPlay(() => { this.setData({ noteOnePlaying: 1 }) })
+    stdA.onEnded(() => { this.setData({ noteOnePlaying: 2, selectMove: 1 }) })
     note.onPlay(() => {
-      this.setData({ready: true,noteTwoPlaying: 1})
+      this.setData({ ready: true, noteTwoPlaying: 1 })
       ready = true
     })
-    note.onEnded(() => {this.setData({noteTwoPlaying: 2})})
-    this.playNotes()
+    note.onEnded(() => { this.setData({ noteTwoPlaying: 2 }) })
+    setTimeout(this.playNotes, 500)
   },
   getOrigin: function(e) {
     originX = e.touches[0].clientX

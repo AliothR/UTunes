@@ -38,35 +38,36 @@ page{
   flex-direction: row;
   justify-content: space-between;
   position:absolute;
-  bottom:0;
+  top:0;
   width:730rpx;
   padding:10rpx;
 }
 .navigator-left{
   order:1;
   display:flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   justify-content: flex-start;
+  align-items:flex-start;
 }
 .navigator-right{
   order:2;
   display:flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   justify-content: flex-start;
 }
-.level, .life, .ratio{
+.level, .life{
   display:flex;
   justify-content: space-between;
   padding:5rpx;
 }
-.ratio, .life{
+.life{
   order:1;
   align-items: flex-end;
 }
 .level{
   order:2;
 }
-.level, .ratio{
+.level{
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-end;
@@ -86,17 +87,25 @@ page{
 }
 .level-text, .ratio{
   font-size:12px;
-
 }
 .level-number{
   font-size:20px;
   margin-left:20rpx;
 }
-.score{
-  position:fixed;
-  font-size:100px;
+.background-display{
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position:absolute;
+  top: 5vh;
   z-index:-10;
+}
+.score-number{
+  font-size:100px;
   opacity:0.5;
+}
+.ratio-content{
+  opacity: 0.5;
 }
 .answer{
   display:flex;
@@ -104,7 +113,7 @@ page{
   justify-content: space-between;
   align-items: center;
   position:fixed;
-  top:30vh;
+  top:40vh;
   height:40vh;
   color:white;
 }
@@ -180,4 +189,48 @@ page{
 }
 .allow-all-transitions-true{
   transition: all 0.4s ease;
+}
+.guide-interface{
+  opacity:0.5;
+}
+.hint-text{
+  font-size:16px;
+  line-height:16px;
+  color:white;
+  opacity: 1;
+}
+.placehold{
+  visibility: hidden;
+  height:0px;
+}
+.guide-select{
+  transform:translate(-5.5vh,0);
+}
+.guide-ratio, .guide-level, .guide-life, .guide-score{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.footer{
+  position: absolute;
+  bottom: 0;
+  width: 750rpx;
+}
+.I-know{
+  position:absolute;
+  font-size:50rpx;
+  line-height:50rpx;
+  padding:50rpx 0;
+  border:0px solid transparent;
+  height:50rpx;
+  width:150rpx;
+  bottom:5vh;
+  right:5vh;
+  text-align:center;
+  overflow:hidden;
+  border-radius:50%;
+  background:rgba(255,255,255,1);
+  color:rgba(0,255,181,1);
+  box-shadow:0 4px 10px 0 rgba(0,0,0,.16), 0 4px 20px 0 rgba(0,0,0,.12);
+  transition:all 0.25s ease;
 }

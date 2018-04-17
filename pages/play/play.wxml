@@ -1,12 +1,8 @@
 <!--index.wxml-->
-<view class="navigator">
+<view wx:if="{{!firstTimePlay}}" class="navigator" style="opacity:{{pageOpacity}}">
   <view class="navigator-left">
-   <view class="ratio">
-     <text>{{ratio}}% of a half step</text>
-   </view>
    <view class="level">
      <text class="level-text">Level</text><text class="level-number">{{level}}</text>
-     <text wx:if="{{firstTimePlay}}">关卡</text>
    </view>
   </view>
   <view class="navigator-right">
@@ -14,17 +10,20 @@
      <i class="iconfont icon-musicnote life-{{lifes>=1}}"></i>
      <i class="iconfont icon-musicnote life-{{lifes>=2}}"></i>
      <i class="iconfont icon-musicnote life-{{lifes>=3}}"></i>
-     <text wx:if="{{firstTimePlay}}">生命</text>
    </view>
   </view>
 </view>
-<view class="container">
-   <view class="score">
-     <text>{{score}}</text>
-     <text wx:if="{{firstTimePlay}}">分数</text>
-   </view>
+<view wx:if="{{!firstTimePlay}}" class="container"style="opacity:{{pageOpacity}}">
+  <view class="background-display">
+    <view class="score">
+      <text class="score-number">10</text>
+    </view>
+    <view class="ratio">
+      <text class="ratio-content">{{ratio}}% of a half step</text>
+    </view>
+  </view>
   <view class="answer">
-    <view class="selection select-high first-time-play-{{firstTimePlay}}">
+    <view class="selection select-high">
       <i class="icon iconfont icon-treble-clef"></i>
     </view>
     <view class="select select-move-{{selectMove}}">
@@ -35,13 +34,105 @@
         <i class="icon iconfont icon-answer icon-iosmusicalnotes" style="opacity:{{answerMatch.none}}"></i>
         <i class="icon iconfont icon-answer icon-right" style="opacity:{{answerMatch.right}}"></i>
         <i class="icon iconfont icon-answer icon-wrong" style="opacity:{{answerMatch.wrong}}"></i>
-      <view class="retry retry-{{noteTwoPlaying}}">
-        <view bindtap="bind Tap" class="first-time-play-{{firstTimePlay}}"></view>
-      </view>
       </view>
     </view>
-    <view class="selection select-low first-time-play-{{firstTimePlay}}">
+    <view class="selection select-low">
       <i class="icon iconfont icon-bass-clef"></i>
     </view>
+  </view>
+</view>
+
+<view wx:if="{{firstTimePlay}}" class="guide-interface" style="opacity:{{pageOpacity/2}}">
+  <view class="navigator">
+    <view class="navigator-left">
+      <view class="level">
+       <text class="level-text">Level</text><text class="level-number">1</text>
+      </view>
+    </view>
+    <view class="navigator-right">
+      <view class="life">
+        <i class="iconfont icon-musicnote life-true"></i>
+        <i class="iconfont icon-musicnote life-true"></i>
+        <i class="iconfont icon-musicnote life-true"></i>
+      </view>
+    </view>
+  </view>
+  <view class="container">
+    <view class="background-display">
+      <view class="score">
+        <text class="score-number">10</text>
+      </view>
+      <view class="ratio">
+        <text class="ration-content">100% of a half step</text>
+      </view>
+    </view>
+    <view class="answer">
+    <view class="selection select-high">
+      <i class="icon iconfont icon-treble-clef"></i>
+    </view>
+      <view class="select select-move-1">
+        <view class="first-note play-1 first-play-1">
+         <i class="icon iconfont icon-iosmusicalnote"></i>
+        </view>
+        <view class="second-note play-2 second-play-2">
+          <i class="icon iconfont icon-answer icon-iosmusicalnotes"></i>
+        </view>
+      </view>
+    <view class="selection select-low">
+      <i class="icon iconfont icon-bass-clef"></i>
+    </view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{firstTimePlay}}" class="guide-content" style="opacity:{{pageOpacity}}">
+  <view class="navigator">
+    <view class="navigator-left">
+      <view class="level guide-level">
+       <text class="hint-text placehold-hint-text">关卡</text>
+       <text class="level-text placehold">Level<text class="level-number">1</text></text>
+      </view>
+    </view>
+    <view class="navigator-right">
+      <view class="life guide-life">
+        <text class="hint-text placehold-hint-text" style="line-height:36px">生命</text>
+        <view class="placehold">
+          <i class="iconfont icon-musicnote life-true placehold"></i>
+          <i class="iconfont icon-musicnote life-true placehold"></i>
+          <i class="iconfont icon-musicnote life-true placehold"></i>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="container">
+    <view class="background-display">
+      <view class="score guide-score">
+        <text class="score-number placehold">10</text>
+        <text class="hint-text" style="line-height:132px">分数</text>
+      </view>
+      <view class="ratio guide-ratio">
+          <view class="hint-text placehold-hint-text">难度</view>
+          <view class="placehold">100% of a half step</view>
+      </view>
+    </view>
+    <view class="answer">
+    <view class="selection select-high">
+      <text class="hint-text" style="line-height:10vh">高</text>
+    </view>
+      <view class="select select-move-1 guide-select">
+        <view class="first-note play-1 first-play-1">
+          <text class="hint-text" style="line-height:10vh">重听</text>
+        </view>
+        <view class="second-note play-1">
+          <text class="hint-text">拖动\n滑块</text>
+        </view>
+      </view>
+    <view class="selection select-low">
+      <text class="hint-text" style="line-height:5vh">低</text>
+    </view>
+    </view>
+  </view>
+  <view class="footer">
+   <view class="I-know" bindtap="clearFirstTimePlay">OK</view>
   </view>
 </view>
