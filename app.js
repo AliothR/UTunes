@@ -3,6 +3,14 @@
 const stdA = wx.createInnerAudioContext()
 
 App({
+  globalData: {
+    userInfo: null,
+    scoreboard: {
+      level: 0,
+      score: 0
+    },
+    firstTimePlay: null
+  },
   onLaunch: function () {
     // 展示本地存储能力
     var logs = wx.getStorageSync('logs') || []
@@ -37,12 +45,22 @@ App({
     })
     stdA.src = 'http://165.227.29.231/UTunes/mp3s/stdA.mp3'
     stdA.obeyMuteSwitch = false
-  },
-  globalData: {
-    userInfo: null,
-    scoreboard: {
-      level: 0,
-      score: 0
+    try {
+      var firstTimePlay = wx.getStorageSync('firstTimePlay')
+      if (firstTimePlay === false) {
+        console.log('firstTimePlay', 'false')
+        this.globalData.firstTimePlay = firstTimePlay
+      }
+      else {
+        console.log('firstTimePlay', 'true')
+        wx.setStorageSync('firstTimePlay', 'true')
+        this.globalData.firstTimePlay = true
+      }
+    } catch (e) {
+      console.log('firstTimePlay', 'error')
+      console.log(e)
+      wx.setStorageSync('firstTimePlay', 'true')
+      this.globalData.firstTimePlay = true
     }
   },
   stdA: stdA

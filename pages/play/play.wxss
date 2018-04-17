@@ -87,6 +87,7 @@ page{
 }
 .level-text, .ratio{
   font-size:12px;
+  text-align:center;
 }
 .level-number{
   font-size:20px;
@@ -99,6 +100,9 @@ page{
   position:absolute;
   top: 5vh;
   z-index:-10;
+}
+.score{
+  text-align: center;
 }
 .score-number{
   font-size:100px;
@@ -236,6 +240,6 @@ page{
   border-radius:50%;
   background:rgba(255,255,255,1);
   color:rgba(0,255,181,1);
-  box-shadow:0 4px 10px 0 rgba(0,0,0,.16), 0 4px 20px 0 rgba(0,0,0,.12);
+  box-shadow:0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
   transition:all 0.25s ease;
 }

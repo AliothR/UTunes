@@ -1,27 +1,27 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="gameover">
+  <!--<view class="gameover">
     <text wx:if="{{scoreboard.status=='GO'}}">GAME OVER</text>
     <block wx:else>
       <text>GAME CLEAR</text>
     </block>
-  </view> 
+  </view> -->
   <view class="level">
-    <text>Level: {{scoreboard.level}}</text>
+    <text>Level {{scoreboard.level}}</text>
   </view>
   <view class="score">
-    <text>Score: {{scoreboard.score}}</text>
+    <text>{{scoreboard.score}}</text>
   </view>
   <view class="ratio">
-    <text wx:if="{{scoreboard.status=='GO'}}">Ratio: >{{scoreboard.ratio}}%</text>
+    <text wx:if="{{scoreboard.status=='GO'}}">{{scoreboard.ratio}}% of a half step</text>
     <block wx:else>
       <text>Ratio: {{char_lt}}{{scoreboard.ratio}}%</text>
     </block>
   </view> 
   <view class="review">
-    <text>{{review}}</text>
+    <text><text class="review-content">{{review}}</text></text>
   </view>
-  <view>
-    <button bindtap="bindRestartTap">重新开始</button>
+  <view class="retry">
+    <view class="retry-button" bindtap="bindRestartTap">Retry</view>
   </view>
 </view>

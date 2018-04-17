@@ -16,7 +16,7 @@
 <view wx:if="{{!firstTimePlay}}" class="container"style="opacity:{{pageOpacity}}">
   <view class="background-display">
     <view class="score">
-      <text class="score-number">10</text>
+      <text class="score-number">{{score}}</text>
     </view>
     <view class="ratio">
       <text class="ratio-content">{{ratio}}% of a half step</text>

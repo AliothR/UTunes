@@ -56,18 +56,18 @@ Page({
   selectHigh() {
     selectDown = true
     this.stopPlay()
+    retry = true
     this.judge(1)
   },
   selectLow() {
     selectDown = true
     this.stopPlay()
+    retry = true
     this.judge(-1)
   },
   selectRetry() {
     selectDown = true
-    this.setData({
-      retry: false,
-    })
+    retry = false
     this.stopPlay()
     this.playNotes(true)
     selectDown = false
@@ -79,6 +79,7 @@ Page({
   },
   onUnload: function (){
     this.stopPlay()
+    retry = true
     this.triggerPageOpacity()
   },
   onShow: function (){
@@ -129,13 +130,15 @@ Page({
       if (renderInterval > 10) {
         var dX = e.touches[0].clientX - originX
         var dY = e.touches[0].clientY - originY
-        var selectX = (Math.abs(dX) < window.width / 4) ? dX : (window.width / 4 * Math.abs(dX) / dX)
+        var selectX = (dX > window.width / -4) ? dX : (window.width / -4 )
+        selectX = (selectX > 0) ? 0 : selectX
         var selectY = (Math.abs(dY) < window.height * 0.16) ? dY : (window.height * 0.16 * Math.abs(dY) / dY)
         if (setMoveDirection) {
           if (Math.abs(dX) > Math.abs(dY)) moveDirection = 0
           else moveDirection = 1
           setMoveDirection = false
         }
+        if (!retry) moveDirection = 1
         if (!moveDirection) selectY = 0
         else selectX = 0
         this.setData({ selectX: selectX, selectY: selectY })
