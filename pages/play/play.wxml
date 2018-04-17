@@ -42,7 +42,7 @@
   </view>
 </view>
 
-<view wx:if="{{firstTimePlay}}" class="guide-interface" style="opacity:{{pageOpacity/2}}">
+<view wx:if="{{firstTimePlay}}" class="guide-interface" style="opacity:{{pageOpacity*guideOpacity/3}}">
   <view class="navigator">
     <view class="navigator-left">
       <view class="level">
@@ -85,7 +85,7 @@
   </view>
 </view>
 
-<view wx:if="{{firstTimePlay}}" class="guide-content" style="opacity:{{pageOpacity}}">
+<view wx:if="{{firstTimePlay}}" class="guide-content" style="opacity:{{pageOpacity*guideOpacity}}">
   <view class="navigator">
     <view class="navigator-left">
       <view class="level guide-level">
@@ -133,6 +133,6 @@
     </view>
   </view>
   <view class="footer">
-   <view class="I-know" bindtap="clearFirstTimePlay">OK</view>
+   <view class="I-know" bindtap="iKnow">OK</view>
   </view>
 </view>

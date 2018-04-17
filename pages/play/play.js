@@ -23,7 +23,8 @@ Page({
     ratio: 0,
     noteOnePlaying: null,
     noteTwoPlaying: null,
-    firstTimePlay: true,
+    firstTimePlay: app.globalData.firstTimePlay,
+    guideOpacity: 1,
     selectX: 0,
     selectY: 0,
     allowAllTransitions: false,
@@ -34,7 +35,15 @@ Page({
     this.setData({
       firstTimePlay: false
     })
+    app.globalData.firstTimePlay = this.data.firstTimePlay
+    wx.setStorageSync('firstTimePlay', this.data.firstTimePlay)
     this.start()
+  },
+  iKnow(){
+    this.setData({
+      guideOpacity: 0
+    })
+    setTimeout(this.clearFirstTimePlay, 250)
   },
   stopPlay() {
     if (this.data.noteOnePlaying) stdA.stop()
@@ -76,7 +85,7 @@ Page({
     setTimeout(this.triggerPageOpacity,250)
   },
   onLoad: function () {
-    if(!this.data.firstTimePlay){
+    if(!app.globalData.firstTimePlay){
       this.start()
     }
   },
@@ -88,7 +97,7 @@ Page({
       ratio: 100,
       noteOnePlaying: 0,
       noteTwoPlaying: 0,
-      firstTimePlay: false,
+      firstTimePlay: app.globalData.firstTimePlay,
       selectX: 0,
       selectY: 0,
       allowAllTransitions: false,
