@@ -265,12 +265,14 @@ Page({
         score: level == 'Master' ? score + 50 : score,
         ratio: this.data.ratio
       }
-      wx.redirectTo({
-        url: '../end/end',
-      })
+      setTimeout(function () {
+        wx.redirectTo({
+          url: '../end/end',
+        })
+      }, 500 + answerMatch.right * 100 + answerMatch.wrong * 200)
     }
     else{
-      setTimeout(this.playNotes, 618 + answerMatch.right * 100 + answerMatch.wrong * 200)
+      setTimeout(this.playNotes, 500 + answerMatch.right * 100 + answerMatch.wrong * 200)
     }
   },
   playNotes: function (isRetry = false) {
