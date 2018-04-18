@@ -22,14 +22,14 @@ Page({
     var level = app.globalData.scoreboard.level
     var num = Math.floor(Math.random() * this.results[this.lChart[level]].length)
     var review = this.results[this.lChart[level]][num]
-    if (review.indexOf('TA') != -1 && userInfo.gender != 0)
+    if (review.indexOf('TA') != -1 && (!userInfo || userInfo.gender != 0))
     {
-      review = review.replace(/TA/g, userInfo.gender == -1 ? '你' : (userInfo.gender == 1 ? '他' : '她'))
+      review = review.replace(/TA/g, userInfo ? (userInfo.gender == 1 ? '他' : '她') : '你')
       console.log(review)
     }
     if (review.indexOf('XX') != -1)
     {
-      review = review.replace(/XX/, userInfo.nickName)
+      review = review.replace(/XX/, userInfo ? userInfo.nickName : '你')
       console.log(review)
     }
     this.setData({
