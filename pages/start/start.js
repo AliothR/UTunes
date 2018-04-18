@@ -83,6 +83,12 @@ Page({
             userInfo: res.userInfo,
             hasUserInfo: true
           })
+        },
+        fail: res => {
+          app.globalData.userInfo = {
+            nickName: '你',
+            gender: -1
+          }
         }
       })
     }

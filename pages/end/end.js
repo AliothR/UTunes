@@ -24,7 +24,7 @@ Page({
     var review = this.results[this.lChart[level]][num]
     if (review.indexOf('TA') != -1 && userInfo.gender != 0)
     {
-      review = review.replace(/TA/g, userInfo.gender == 1 ? '他' : '她')
+      review = review.replace(/TA/g, userInfo.gender == -1 ? '你' : (userInfo.gender == 1 ? '他' : '她'))
       console.log(review)
     }
     if (review.indexOf('XX') != -1)
