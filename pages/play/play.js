@@ -17,19 +17,23 @@ var selectDown = false
 
 Page({
   data: {
-    score: 0,
-    level: 0,
-    lifes: 0,
-    ratio: 0,
-    noteOnePlaying: null,
-    noteTwoPlaying: null,
+    score: 10,
+    level: 1,
+    lifes: 3,
+    ratio: 100,
+    noteOnePlaying: 1,
+    noteTwoPlaying: 2,
     firstTimePlay: app.globalData.firstTimePlay,
-    guideOpacity: 1,
+    guideOpacity: 2,
     selectX: 0,
     selectY: 0,
     allowAllTransitions: false,
     answerMatch: {right: 0,wrong: 0,none: 1},
-    pageOpacity: 0
+    pageOpacity: 0,
+    selectMove: 1,
+    guidePage: [],
+    iKnowText: 'Next',
+    iKnowButton: ''
   },
   clearFirstTimePlay(){
     this.setData({
@@ -38,12 +42,43 @@ Page({
     app.globalData.firstTimePlay = this.data.firstTimePlay
     wx.setStorageSync('firstTimePlay', this.data.firstTimePlay)
     this.start()
+    wx.setNavigationBarColor({frontColor: '#ffffff',backgroundColor: '#2eb88d'})
+  },
+  clearIKnowTap() {
+    this.setData({
+      iKnowButton: 'visited-button'
+    })
+  },
+  iKnowTap() {
+    this.setData({
+      iKnowButton: 'active-button'
+    })
+    setTimeout(this.clearIKnowTap, 250)
   },
   iKnow(){
-    this.setData({
-      guideOpacity: 0
-    })
-    setTimeout(this.clearFirstTimePlay, 250)
+    if(!this.data.guidePage[2]){
+      if(!this.data.guidePage[1]){
+        this.setData({
+          guidePage: [false, true, false]
+        })
+      }
+      else {
+        this.setData({
+          guidePage: [false, false, true],
+          iKnowText: 'Go'
+        })
+      }
+      this.iKnowTap()
+    }
+    else {
+      this.setData({
+        guidePage: [false, false, false],
+        guideOpacity: 0,
+        pageOpacity: 1
+      })
+      this.iKnowTap()
+      setTimeout(this.clearFirstTimePlay, 250)
+    }
   },
   stopPlay() {
     if (this.data.noteOnePlaying) stdA.stop()
@@ -81,6 +116,7 @@ Page({
     if (!app.globalData.firstTimePlay) {
       this.start()
     }
+    else this.showGuide()
   },
   onUnload: function () {
     this.stopPlay()
@@ -88,10 +124,22 @@ Page({
     this.triggerPageOpacity()
   },
   onShow: function () {
-    setTimeout(this.triggerPageOpacity,250)
+    if (!app.globalData.firstTimePlay) {
+      setTimeout(this.triggerPageOpacity, 250)
+    }
   },
   onHide: function () {
-    
+    this.setData({
+      pageOpacity: 0
+    })
+  },
+  showGuide(){
+    wx.setNavigationBarColor({ frontColor: '#ffffff', backgroundColor: '#63caab' })
+    var guidePage = [true, false, false]
+    this.setData({
+      guidePage: guidePage,
+      pageOpacity: 0.5
+    })
   },
   start() {
     this.setData({
