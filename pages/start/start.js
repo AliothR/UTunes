@@ -7,7 +7,7 @@ Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
-    hasUserInfo: false,
+    hasUserInfo: null,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
   },
   play() {
@@ -82,6 +82,11 @@ Page({
           this.setData({
             userInfo: res.userInfo,
             hasUserInfo: true
+          })
+        },
+        fail: res => {
+          this.setData({
+            hasUserInfo: false
           })
         }
       })
