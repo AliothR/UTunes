@@ -4,7 +4,7 @@ const app = getApp()
 var direction = null
 const stdA = app.stdA
 const note = wx.createInnerAudioContext()
-const MAX_LEVEL = 30
+const MAX_LEVEL = 5
 var ready = false
 var retry = true
 var originX = 0
@@ -17,7 +17,7 @@ var selectDown = false
 
 Page({
   data: {
-    score: 10,
+    score: 0,
     level: 1,
     lifes: 3,
     ratio: 100,
@@ -143,7 +143,7 @@ Page({
   },
   start() {
     this.setData({
-      score: 10,
+      score: 0,
       level: 1,
       lifes: 3,
       ratio: 100,
@@ -241,12 +241,12 @@ Page({
     var answerMatch = { right: 0,wrong: 0,none: 0}
     if (direction == answer) {
       answerMatch.right = 1
-      score += Math.max(10, Math.ceil(level / 5) * 10)
+      score += 2 * level  //Math.max(10, Math.ceil(level / 5) * 10)
       level = level == MAX_LEVEL ? 'Master' : level + 1
     }
     else {
       answerMatch.wrong = 1
-      score = Math.max(0, score - Math.max(5, Math.ceil(level / 5) * 5))
+      score = Math.max(0, score - level)  //Math.max(0, score - Math.max(5, Math.ceil(level / 5) * 5))
       level = lifes > 1 ? Math.max(0, level - 1) : level
       lifes = lifes - 1
     }
@@ -259,10 +259,15 @@ Page({
     })
     console.log(this.data.lifes)
     if (lifes <= 0 || level == 'Master') {
+      if (level == 'Master')
+      {
+        if (lifes >= 2) score += 45
+        if (lifes >= 3) score += 49
+      }
       app.globalData.scoreboard = {
         status: lifes <= 0 ? 'GO' : 'GC',
         level: level,
-        score: level == 'Master' ? score + 50 : score,
+        score: score,
         ratio: this.data.ratio
       }
       setTimeout(function () {

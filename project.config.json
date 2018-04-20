@@ -16,7 +16,7 @@
 		"ignore": [
 			{
 				"type": "folder",
-				"value": "test/"
+				"value": "resources/"
 			}
 		]
 	},
