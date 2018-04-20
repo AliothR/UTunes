@@ -40,6 +40,22 @@ Page({
     /*wx.navigateTo({
       url: '../logs/logs'
     })*/
+    if (!this.data.hasUserInfo) {
+      wx.openSetting({
+        success: (res) => {
+          wx.getUserInfo({
+            success: res => {
+              // 可以将 res 发送给后台解码出 unionId
+              app.globalData.userInfo = res.userInfo
+              this.setData({
+                userInfo: app.globalData.userInfo,
+                hasUserInfo: true
+              })
+            }
+         })
+        }
+      })
+    }
   },
   bindPlayTap: function() {
     this.activeButton()
