@@ -4,7 +4,8 @@ const app = getApp()
 var direction = null
 const stdA = app.stdA
 const note = wx.createInnerAudioContext()
-const MAX_LEVEL = 5
+const MAX_LEVEL = 30
+const MAX_LIFE = 3
 var ready = false
 var retry = true
 var originX = 0
@@ -19,7 +20,7 @@ Page({
   data: {
     score: 0,
     level: 1,
-    lifes: 3,
+    lifes: MAX_LIFE,
     ratio: 100,
     noteOnePlaying: 1,
     noteTwoPlaying: 2,
@@ -145,7 +146,7 @@ Page({
     this.setData({
       score: 0,
       level: 1,
-      lifes: 3,
+      lifes: MAX_LIFE,
       ratio: 100,
       noteOnePlaying: 0,
       noteTwoPlaying: 0,
@@ -243,12 +244,14 @@ Page({
       answerMatch.right = 1
       score += 2 * level  //Math.max(10, Math.ceil(level / 5) * 10)
       level = level == MAX_LEVEL ? 'Master' : level + 1
+      console.log()
     }
     else {
       answerMatch.wrong = 1
       score = Math.max(0, score - level)  //Math.max(0, score - Math.max(5, Math.ceil(level / 5) * 5))
       level = lifes > 1 ? Math.max(0, level - 1) : level
       lifes = lifes - 1
+      console.log()
     }
     this.setData({
       answerMatch: answerMatch,

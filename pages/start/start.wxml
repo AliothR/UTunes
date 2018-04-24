@@ -1,25 +1,10 @@
 <!--index.wxml-->
 <view class="container {{pageCondition}}">
-  <!--<view id="background">
-    <view id="noteGroup-1">
-      <view id="note-1-1" class="note"></view>
-      <view id="note-1-2" class="note"></view>
-    </view>
-    <view id="noteGroup-2">
-      <view id="note-2-1" class="note"></view>
-      <view id="note-2-2" class="note"></view>
-    </view>
-    <view id="noteGroup-3">
-      <view id="note-3-1" class="note"></view>
-      <view id="note-3-2" class="note"></view>
-    </view>
-  </view>-->
   <block wx:if="{{hasUserInfo != null}}">
     <view class="userinfo">
-      <!--<button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>-->
       <block wx:if="{{hasUserInfo}}">
         <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        <text class="userinfo-nickname"><text class="nickname">{{userInfo.nickName}}</text></text>
       </block>
       <block wx:else>
         <image bindtap="bindViewTap" class="userinfo-avatar" src="../../resource/minipro_img.png" background-size="cover"></image>

@@ -19,7 +19,7 @@
     </block>
   </view> 
   <view class="review">
-    <text><text class="review-content">{{review}}</text></text>
+    <text class="review-content">{{reviewGroup.pre}}<text wx:if="{{reviewGroup.middle}}" class="nickname">{{reviewGroup.middle}}</text>{{reviewGroup.post}}</text>
   </view>
   <view class="retry">
     <view class="retry-button" bindtap="bindRestartTap">Retry</view>
