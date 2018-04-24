@@ -15,7 +15,9 @@ var setMoveDirection = true
 var window
 var lastRenderTime = new Date().getTime()
 var selectDown = false
-
+var pageReady = false
+var stdATimer = null
+var noteTimer = null
 Page({
   data: {
     score: 0,
@@ -84,6 +86,8 @@ Page({
   stopPlay() {
     if (this.data.noteOnePlaying) stdA.stop()
     if (this.data.noteTwoPlaying) note.stop()
+    clearTimeout(stdATimer)
+    clearTimeout(noteTimer)
     this.setData({
       noteOnePlaying: 2,
       noteTwoPlaying: 2,
@@ -114,23 +118,54 @@ Page({
     })
   },
   onLoad: function () {
+    this.setData({
+      score: 0,
+      level: 1,
+      lifes: MAX_LIFE,
+      ratio: 100,
+      firstTimePlay: app.globalData.firstTimePlay,
+    })
+    retry = true
+    pageReady = false
+    console.log('onLoad')
     if (!app.globalData.firstTimePlay) {
       this.start()
     }
     else this.showGuide()
   },
   onUnload: function () {
+    console.log('onUnload')
     this.stopPlay()
     retry = true
     this.triggerPageOpacity()
   },
   onShow: function () {
+    console.log('onShow')
     if (!app.globalData.firstTimePlay) {
       setTimeout(this.triggerPageOpacity, 250)
+    }else{
+      this.showGuide()
+    }
+    if(pageReady && retry !== null){
+      retry = null
+      this.stopPlay()
+      this.playNotes(true)
+    } else if(pageReady && retry === null){
+      this.setData({
+        noteOnePlaying: 2,
+        noteTwoPlaying: 2,
+      })
     }
   },
   onHide: function () {
+    console.log('onHide')
+    if (this.data.noteOnePlaying) stdA.stop()
+    if (this.data.noteTwoPlaying) note.stop()
+    clearTimeout(stdATimer)
+    clearTimeout(noteTimer)
     this.setData({
+      noteOnePlaying: 0,
+      noteTwoPlaying: 0,
       pageOpacity: 0
     })
   },
@@ -144,13 +179,8 @@ Page({
   },
   start() {
     this.setData({
-      score: 0,
-      level: 1,
-      lifes: MAX_LIFE,
-      ratio: 100,
       noteOnePlaying: 0,
       noteTwoPlaying: 0,
-      firstTimePlay: app.globalData.firstTimePlay,
       selectX: 0,
       selectY: 0,
       allowAllTransitions: false,
@@ -260,7 +290,6 @@ Page({
       lifes: lifes,
       ratio: this.ratioChart[level == 'Master' ? MAX_LEVEL : level],
     })
-    console.log(this.data.lifes)
     if (lifes <= 0 || level == 'Master') {
       if (level == 'Master')
       {
@@ -295,11 +324,12 @@ Page({
     })
     if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
     console.log(this.data.level, this.data.score, direction, isRetry)
-    note.src = 'http://165.227.29.231/UTunes/mp3s/lv' + this.data.level + (direction == -1 ? '_l' : '_h') + '.mp3'
-    setTimeout(function () {
+    note.src = app.globalData.audioPosition + '/lv' + this.data.level + (direction == -1 ? '_l' : '_h') + '.mp3'
+    stdATimer = setTimeout(function () {
       console.log('Playing ' + stdA.src)
       stdA.play()
-      setTimeout(function () {
+      pageReady = true
+      noteTimer = setTimeout(function () {
         console.log('Playing ' + note.src)
         note.play()
       }, 1618)

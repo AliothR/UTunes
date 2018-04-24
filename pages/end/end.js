@@ -34,7 +34,7 @@ Page({
       reviewGroup.pre = reviewGroup.pre.replace(/TA/g, userInfo ? (userInfo.gender == 1 ? '他' : '她') : '你')
       console.log(reviewGroup.pre)
     }
-    if (reviewGroup.post.indexOf('TA') != -1 && (!userInfo || userInfo.gender != 0)) {
+    if ((!(!reviewGroup.post)) && reviewGroup.post.indexOf('TA') != -1 && (!userInfo || userInfo.gender != 0)) {
       reviewGroup.post = reviewGroup.post.replace(/TA/g, userInfo ? (userInfo.gender == 1 ? '他' : '她') : '你')
       console.log(reviewGroup.post)
     }

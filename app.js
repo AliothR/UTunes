@@ -9,7 +9,8 @@ App({
       level: 0,
       score: 0
     },
-    firstTimePlay: null
+    firstTimePlay: null,
+    audioPosition: 'http://home.ustc.edu.cn/~haku/mp3s'
   },
   onLaunch: function () {
     // 展示本地存储能力
@@ -32,7 +33,11 @@ App({
             success: res => {
               // 可以将 res 发送给后台解码出 unionId
               this.globalData.userInfo = res.userInfo
-
+              console.log(res.userInfo)
+              if(res.userInfo.country != 'China'){
+                this.globalData.audioPosition = 'http://165.227.29.231/UTunes/mp3s'
+              }
+              stdA.src = this.globalData.audioPosition + '/stdA.mp3'
               // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
               // 所以此处加入 callback 以防止这种情况
               if (this.userInfoReadyCallback) {
@@ -43,7 +48,7 @@ App({
         }
       }
     })
-    stdA.src = 'http://165.227.29.231/UTunes/mp3s/stdA.mp3'
+    stdA.src = this.globalData.audioPosition + '/stdA.mp3'
     stdA.obeyMuteSwitch = false
     try {
       var firstTimePlay = wx.getStorageSync('firstTimePlay')
