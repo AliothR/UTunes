@@ -2,6 +2,7 @@
 .container{
   transition:opacity 0.25s ease;
   opacity:0;
+  padding: 20vh 0 30vh;
 }
 
 .page-in{
@@ -27,11 +28,6 @@
 
 .userinfo-nickname {
   color: rgba(0,255,181,1);
-}
-
-.gamestart {
-  position:fixed;
-  bottom:150px;
 }
 
 .gamestart-button{

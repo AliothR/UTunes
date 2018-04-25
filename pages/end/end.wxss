@@ -8,6 +8,7 @@
   flex-direction: column;
   justify-content: center;
   margin:50rpx;
+  width: 650rpx;
   padding:0;
 }
 .level{

@@ -24,7 +24,7 @@
   transition:none;
 }
 .container{
-  padding:0;
+  padding:5vh 0 15vh;
 }
 .scoreboard {
   margin-top: 50px;
@@ -83,7 +83,7 @@ page{
 .life-false{
   animation-name:life-loose;
   animation-duration: 0.75s;
-  opacity:0.25;
+  opacity:0.2;
 }
 .level-text, .ratio{
   font-size:12px;
@@ -97,15 +97,14 @@ page{
   display:flex;
   flex-direction: column;
   justify-content: flex-start;
-  position:absolute;
-  top: 5vh;
   z-index:-10;
 }
 .score{
   text-align: center;
 }
 .score-number{
-  font-size:100px;
+  font-size: 20vh;
+  line-height: 20vh;
   opacity:0.5;
 }
 .ratio-content{
@@ -116,8 +115,6 @@ page{
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  position:fixed;
-  top:40vh;
   height:40vh;
   color:white;
 }
@@ -150,7 +147,7 @@ page{
   justify-content: space-between;
   align-items: center;
   width:25vh;
-  transition: transform 0.5s ease;
+  transition: transform 0.4s ease;
   transform: translate(7.5vh,0);
 }
 .select-move-1{
@@ -172,7 +169,7 @@ page{
   box-shadow:0 0px 0px 0 rgba(0,0,0,.16), 0 0px 0px 0 rgba(0,0,0,.12);
   opacity: 0;
   transition-property: height, padding, margin, colo, background-color, box-shadow, opacity;
-  transition-duration: 0.5s;
+  transition-duration: 0.4s;
   transition-timing-function: ease;
 }
 .play-0{
