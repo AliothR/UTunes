@@ -7,7 +7,8 @@ App({
     userInfo: null,
     scoreboard: {
       level: 0,
-      score: 0
+      score: 0,
+      hasUserInfo: null
     },
     firstTimePlay: null,
     audioPosition: 'http://home.ustc.edu.cn/~haku/mp3s'
@@ -25,7 +26,7 @@ App({
       }
     })
     // 获取用户信息
-    wx.getSetting({
+    /*wx.getSetting({
       success: res => {
         if (res.authSetting['scope.userInfo']) {
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
@@ -47,7 +48,23 @@ App({
           })
         }
       }
-    })
+    })*/
+    //适配新的微信授权
+    try{
+      var hasUserInfo = wx.getStorageSync('hasUserInfo')
+      if(hasUserInfo != ''){
+        this.globalData.hasUserInfo = hasUserInfo
+        if(hasUserInfo){
+          try{
+            var userInfo = wx.getStorageSync('userInfo')
+            if(userInfo){this.globalData.userInfo = userInfo}
+            else{console.log('userInfo empty!')}
+          } catch (e){console.error('hasUserInfo true but no userInfo!')}
+        }
+      }
+      else{console.log('no hasUserInfo')}
+    } catch (e){console.error(e)}
+    //如果已有用户信息
     stdA.src = this.globalData.audioPosition + '/stdA.mp3'
     stdA.obeyMuteSwitch = false
     try {

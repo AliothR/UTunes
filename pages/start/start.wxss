@@ -24,18 +24,20 @@
   height: 128rpx;
   margin: 20rpx;
   border-radius: 50%;
+  background-size: 100% 100%;
+  background-position: center center;
 }
 
 .userinfo-nickname {
   color: rgba(0,255,181,1);
 }
 
-.gamestart-button{
-  font-size:50rpx;
-  line-height:50rpx;
-  padding:50rpx 0;
+.gamestart-button, .getUserInfo-button{
+  font-size:70rpx;
+  line-height:70rpx;
+  padding:40rpx 0;
   border:0px solid transparent;
-  height:50rpx;
+  height:150rpx;
   width:150rpx;
   text-align:center;
   overflow:hidden;
@@ -44,6 +46,9 @@
   color:rgba(0,255,181,1);
   box-shadow:0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
   transition:all 0.25s ease;
+}
+.gamestart-button{
+  padding:42rpx 0 38rpx;
 }
 
 .active-button{

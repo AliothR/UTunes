@@ -1,13 +1,24 @@
 //index.js
 //获取应用实例
 const app = getApp()
+var userInfo = app.globalData.userInfo
+var level = app.globalData.scoreboard.level
+var num = 0
+var reviewGroup = null
+var window = {height:0, width:0}
+var imageUrl
+var origin = null
+var ctxStore = null
+var that = null
 
 Page({
   data: {
     userInfo: null,
     scoreboard: null,
     reviewGroup: null,
-    char_lt: '<'
+    char_lt: '<',
+    canvasSize: { height: 0, width: 0 },
+    tempFilePath: null
   },
   retry() {
     wx.redirectTo({
@@ -17,31 +28,271 @@ Page({
   bindRestartTap: function () {
     setTimeout(this.retry, 250)
   },
-  onLoad: function () {
-    var userInfo = app.globalData.userInfo
-    var level = app.globalData.scoreboard.level
-    var num = Math.floor(Math.random() * this.results[this.lChart[level]].length)
-    var reviewGroup = this.results[this.lChart[level]][num]
-    if (reviewGroup.post === null) {
-      console.log(reviewGroup)
+  getWindow() {
+    wx.getSystemInfo({
+      success: res => {
+        window = { height: res.windowHeight, width: res.windowWidth, dpr: res.pixelRatio}
+      }
+    })
+  },//获取屏幕大小
+  getReviewGroup() {
+    var numT = Math.floor(Math.random() * this.results[this.lChart[level]].length)
+    var reviewGroupT = this.results[this.lChart[level]][numT]
+    num = numT
+    if (reviewGroupT.post === null) {
+      console.log(reviewGroupT)
     }
-    else{
-      reviewGroup.middle = (userInfo ? userInfo.nickName : '你')
-      console.log(reviewGroup)
+    else {
+      reviewGroupT.middle = (userInfo ? userInfo.nickName : '你')
+      console.log(reviewGroupT)
     }
-    if (reviewGroup.pre.indexOf('TA') != -1 && (!userInfo || userInfo.gender != 0))
-    {
-      reviewGroup.pre = reviewGroup.pre.replace(/TA/g, userInfo ? (userInfo.gender == 1 ? '他' : '她') : '你')
-      console.log(reviewGroup.pre)
+    if (reviewGroupT.pre.indexOf('TA') != -1 && (!userInfo || userInfo.gender != 0)) {
+      reviewGroupT.pre = reviewGroupT.pre.replace(/TA/g, userInfo ? (userInfo.gender == 1 ? '他' : '她') : '你')
     }
-    if ((!(!reviewGroup.post)) && reviewGroup.post.indexOf('TA') != -1 && (!userInfo || userInfo.gender != 0)) {
-      reviewGroup.post = reviewGroup.post.replace(/TA/g, userInfo ? (userInfo.gender == 1 ? '他' : '她') : '你')
-      console.log(reviewGroup.post)
+    if ((!(!reviewGroupT.post)) && reviewGroupT.post.indexOf('TA') != -1 && (!userInfo || userInfo.gender != 0)) {
+      reviewGroupT.post = reviewGroupT.post.replace(/TA/g, userInfo ? (userInfo.gender == 1 ? '他' : '她') : '你')
+    }
+    if (reviewGroupT.post === null) {
+      reviewGroupT.post = ''
     }
     this.setData({
       userInfo: userInfo,
       scoreboard: app.globalData.scoreboard,
-      reviewGroup: reviewGroup
+      reviewGroup: reviewGroupT
+    })
+  },//生成review
+  canvasIdErrorCallback(e) {
+    console.error(e.detail.errMsg)
+  },
+  drawText(ctx, text, x, y, fontSize, align){
+    ctx.setTextAlign(align)
+    ctx.setTextBaseline('middle')
+    ctx.setFontSize(fontSize)
+    ctx.setFillStyle((align == 'right') ? '#000000' : '#ffffff')
+    y += fontSize * 0.5
+    ctx.fillText(text, x, y)
+    y += fontSize * 0.5
+    return { x: x, y: y }
+  },//输出文字
+  drawReviewDash(ctx, x, y, r, size, review, rpx) {
+    const PI = Math.PI
+    ctx.setLineDash([30*rpx, 30*rpx], )
+    ctx.setLineWidth(15*rpx)
+    ctx.setStrokeStyle('#ffffff')
+    ctx.beginPath()
+    ctx.moveTo(x, y)
+    x += size.width - 200*rpx
+    ctx.lineTo(x, y)
+    y += r
+    ctx.arc(x, y, r, -0.5 * PI, 0)
+    x += r
+    y += review.height - 50*rpx
+    ctx.lineTo(x, y)
+    x -= r
+    ctx.arc(x, y, r, 0, 0.5 * PI)
+    y += r
+    x -= size.width - 200 * rpx
+    ctx.lineTo(x, y)
+    y -= r
+    ctx.arc(x, y, r, 0.5 * PI, PI)
+    x -= r
+    y -= (review.height - 50*rpx)
+    ctx.lineTo(x, y)
+    x += r
+    ctx.arc(x, y, r, PI, 1.5 * PI)
+    y -= r
+    ctx.closePath()
+    ctx.stroke()
+    return {x: x, y: y}
+  },//画review虚线框
+  drawReview(ctx, review, position, rpx){
+    var out = 0
+    ctx.setLineWidth(1)
+    ctx.setStrokeStyle('rgba(255,255,255,.4)')
+    ctx.setLineDash([1,0],0)
+    ctx.beginPath()
+    while(review.group[out]){
+      position.y += (review.lineHeight - review.fontSize) * 0.5
+      position = this.drawText(ctx, review.group[out], position.x, position.y, review.fontSize, 'left')
+      position.y += (review.lineHeight - review.fontSize) * 0.5
+      ctx.moveTo(position.x, position.y)
+      position.x = review.fontSize * review.group[out].length + 75 * rpx
+      ctx.lineTo(position.x, position.y)
+      position.x = 75 * rpx
+      out = out + 1
+    }
+    ctx.closePath()
+    ctx.stroke()
+    return {x: position.x, y: position.y}
+  },//输出Review
+  drawShareCanvas(){
+    that = this
+    var scoreboard = this.data.scoreboard
+    var size = { height: 0, width: window.width * (origin == 'group' ? 1 : 0.8)}
+    var vh = window.height / 100
+    var rpx = window.width / 750
+    var reviewGroup = this.data.reviewGroup
+    var blank = 6*vh
+    var review = {
+      content: reviewGroup.pre + (reviewGroup.middle ? reviewGroup.middle : '') + reviewGroup.post,
+      width: size.width - 150*rpx,
+      height: null,
+      lineNumber: null,
+      group: [],
+      fontSize: 40*rpx,
+      lineHeight: 60*rpx,
+      QRSize: 170*rpx
+    }
+    review.lineNumber = Math.floor(review.width / review.fontSize)
+    review.height = Math.ceil(review.content.length / review.lineNumber) * review.lineHeight
+    size.height = blank + 2.5 * vh + 15 * vh + 2.5 * vh + blank + 25 * rpx + review.height + 25 * rpx + (origin == 'group' ? 0 : (blank + review.QRSize)) + blank
+    var tmp = 0
+    review.group[tmp] = review.content.substring(review.lineNumber * tmp, review.lineNumber * (tmp + 1))
+    while(review.group[tmp].length == review.lineNumber){
+      tmp = tmp + 1
+      review.group[tmp] = review.content.substring(review.lineNumber * tmp, review.lineNumber * (tmp + 1))
+    }//处理review换行
+    var ctx = wx.createCanvasContext('share-pyq')
+    var position = {x: 0, y: 0}
+    var r = 50*rpx
+    ctx.rect(0, 0, size.width, size.height)
+    ctx.setFillStyle('rgba(46,184,142,1)')
+    ctx.fill()
+    position.y = blank
+    position = this.drawText(ctx, 'Level ' + scoreboard.level, size.width / 2, position.y, 2.5*vh, 'center')
+    position = this.drawText(ctx, scoreboard.score, size.width / 2, position.y, 15*vh, 'center')
+    position = this.drawText(ctx, scoreboard.ratio + '% of a half step', size.width / 2, position.y, 2.5*vh, 'center')
+    position.y = position.y + blank
+    position.x = 100*rpx
+    position = this.drawReviewDash(ctx, position.x, position.y, r, size, review, rpx)
+    position.y = position.y + 25*rpx
+    position.x = 75*rpx
+    position = this.drawReview(ctx, review, position, rpx)
+    position.y = position.y + 25*rpx
+    if (origin == 'pyq') {
+      position.y = position.y + blank
+      position.x = (size.width - review.QRSize - 7 * review.fontSize) * 0.4 + 7 * review.fontSize
+      position.y = position.y + (review.QRSize - review.fontSize * 2 - 10 * rpx) / 2
+      position = this.drawText(ctx, '扫码关注公众号', position.x, position.y, review.fontSize, 'right')
+      position.y += 10 * rpx
+      position = this.drawText(ctx, '参与测试', position.x, position.y, review.fontSize, 'right')
+      position.x = size.width - (size.width - review.QRSize - 7 * review.fontSize) * 0.4 - review.QRSize
+      position.y = position.y - (review.QRSize + review.fontSize * 2 + 10 * rpx) / 2
+      ctx.drawImage('/resource/QRcode.png', position.x, position.y, review.QRSize, review.QRSize)
+    }
+    ctxStore = ctx
+    that = this
+    this.setData({
+      canvasSize: { height: Math.ceil(size.height), width: size.width, opacity: 0 }
+    }, () => {
+      ctxStore.draw(true, () => {
+        that.saveCanvasToFile()
+      })
+    })
+  },
+  delayDraw() {
+  },
+  saveCanvasToFile(repeat = true) {
+    that = this
+    wx.canvasToTempFilePath({
+      canvasId: 'share-pyq',
+      success: function (res) {
+        if (origin == 'pyq') {
+          that.setData({
+            tempFilePath: res.tempFilePath
+          })
+          console.log('tempFilePath = ' + that.data.tempFilePath)
+        }
+        else if (origin == 'group') {
+          wx.saveFile({
+            tempFilePath: res.tempFilePath,
+            success(res) {
+              imageUrl = res.savedFilePath
+              console.log('imageUrl = ' + imageUrl)
+            }
+          })
+          origin = 'pyq'
+          that.drawShareCanvas()
+        }
+      },
+      fail(res) {
+        if (res.errMsg == 'canvasToTempFilePath:fail:create bitmap failed'&&repeat) {
+          that.saveCanvasToFile(false)
+        }
+        console.log(res)
+      }
+    }, that)
+  },
+  saveFileToPhotoAlbum() {
+    that = this
+    if (this.data.tempFilePath) {
+      wx.saveImageToPhotosAlbum({
+        filePath: this.data.tempFilePath,
+        success: function (res) {
+          console.log(res.errMsg)
+          that.closeShare()
+        },
+        fail() {
+          console.log('saveImageToPhotosAlbum fail!')
+          wx.showModal({
+            title: '需要授予权限',
+            content: '请允许写入相册的权限哟',
+            confirmText: '好的呀',
+            cancelText: '不要',
+            confirmColor: 'rgb(0,255,181)',
+            success(res) {
+              if (res.confirm == true) {
+                wx.openSetting({
+                  success(res){
+                    console.log(res.authSetting['scope.writePhotosAlbum'])
+                    if (res.authSetting['scope.writePhotosAlbum']){
+                      wx.saveImageToPhotosAlbum({
+                        filePath: this.data.tempFilePath,
+                        success(res){
+                          that.closeShare()
+                        }
+                      })
+                    }
+                    else{
+                      that.closeShare()
+                    }
+                  }
+                })
+              }
+              else {
+                that.closeShare()
+              }
+            }
+          })
+        },
+      })
+    }
+    else{
+      wx.showToast({
+        title: '请等待图片加载完成',
+        complete(res){
+          console.log(res)
+          that.closeShare()
+        }
+      })
+    }
+  },
+  sharePyq() {
+    wx.setNavigationBarColor({ frontColor: '#ffffff', backgroundColor: '#208164' })
+    this.setData({
+      canvasSize: {height: this.data.canvasSize.height, width: this.data.canvasSize.width, opacity: 1}
+    })
+  },
+  onLoad: function(){
+    this.getWindow()
+    this.getReviewGroup()
+    origin = 'group'
+    this.drawShareCanvas()
+  },
+  closeShare() {
+    wx.setNavigationBarColor({ frontColor: '#ffffff', backgroundColor: '#2eb88e' })
+    this.setData({
+      canvasSize: { height: this.data.canvasSize.height, width: this.data.canvasSize.width, opacity: 0}
     })
   },
   lChart: {
@@ -142,5 +393,12 @@ Page({
       post: '一直有着自己的小秘密，TA知道，樱花飘落的声音，是2.33Hz'
     }
     ]
+  },
+  onShareAppMessage: function(res){
+    return{
+      title: '音高辨识度能力测试——来看看你的乐感叭',
+      path: '/pages/start/start',
+      imageUrl: imageUrl,
+    }
   }
 })

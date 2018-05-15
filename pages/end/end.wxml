@@ -1,27 +1,31 @@
 <!--index.wxml-->
 <view class="container">
-  <!--<view class="gameover">
-    <text wx:if="{{scoreboard.status=='GO'}}">GAME OVER</text>
-    <block wx:else>
-      <text>GAME CLEAR</text>
-    </block>
-  </view> -->
-  <view class="level">
-    <text>Level {{scoreboard.level}}</text>
+  <view class="result">
+    <view class="level">
+      <text>Level {{scoreboard.level}}</text>
+    </view>
+    <view class="score">
+      <text>{{scoreboard.score}}</text>
+    </view>
+    <view class="ratio">
+      <text wx:if="{{scoreboard.status=='GO'}}">{{scoreboard.ratio}}% of a half step</text>
+      <block wx:else>
+        <text>Ratio: {{char_lt}}{{scoreboard.ratio}}%</text>
+      </block>
+    </view> 
   </view>
-  <view class="score">
-    <text>{{scoreboard.score}}</text>
-  </view>
-  <view class="ratio">
-    <text wx:if="{{scoreboard.status=='GO'}}">{{scoreboard.ratio}}% of a half step</text>
-    <block wx:else>
-      <text>Ratio: {{char_lt}}{{scoreboard.ratio}}%</text>
-    </block>
-  </view> 
   <view class="review">
     <text class="review-content">{{reviewGroup.pre}}<text wx:if="{{reviewGroup.middle}}" class="nickname">{{reviewGroup.middle}}</text>{{reviewGroup.post}}</text>
-  </view>
-  <view class="retry">
-    <view class="retry-button" bindtap="bindRestartTap">Retry</view>
+   </view>
+  <view class="option">
+    <button class="share-group iconfont icon-share" hover-class="active-button" open-type="share"></button>
+    <view class="retry-button iconfont icon-restart" hover-class="active-button" bindtap="bindRestartTap"></view>
+    <view class="share-pyq iconfont icon-pengyouquan" hover-class="active-button" bindtap='sharePyq'></view>
   </view>
 </view>
+<view wx:if="{{canvasSize.opacity}}" class="canvas-layer" style="opacity:{{canvasSize.opacity}}">
+  <image style="height: {{canvasSize.height}}px;width:{{canvasSize.width}}px" src='{{tempFilePath}}' mode="aspectFit"></image>
+  <text class="share-pyq-hint">结果会保存到相册咯，谢谢分享哟</text>
+  <view class="share-pyq-share iconfont icon-right" hover-class="active-button" bindtap="saveFileToPhotoAlbum"></view>
+</view>
+<canvas style="height: {{canvasSize.height}}px; width: {{canvasSize.width}}px" canvas-id='share-pyq' binderror='canvasIdErrorCallback'></canvas>

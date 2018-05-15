@@ -7,7 +7,7 @@ Page({
   data: {
     motto: 'Hello World',
     userInfo: {},
-    hasUserInfo: null,
+    hasUserInfo: app.globalData.hasUserInfo,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
   },
   play() {
@@ -36,10 +36,7 @@ Page({
     })
   },
   //事件处理函数
-  bindViewTap: function() {
-    /*wx.navigateTo({
-      url: '../logs/logs'
-    })*/
+  /*bindViewTap: function(e) {
     if (!this.data.hasUserInfo) {
       wx.openSetting({
         success: (res) => {
@@ -56,7 +53,7 @@ Page({
         }
       })
     }
-  },
+  },适配新版用户信息*/
   bindPlayTap: function() {
     this.activeButton()
     setTimeout(this.clearButton, 250)
@@ -69,27 +66,8 @@ Page({
         userInfo: app.globalData.userInfo,
         hasUserInfo: true
       })
-    } /*else if (this.data.canIUse){
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
-      if (!this.hasUserInfo) {
-        wx.getUserInfo({
-          success: res => {
-            app.globalData.userInfo = res.userInfo
-            this.setData({
-              userInfo: res.userInfo,
-              hasUserInfo: true
-            })
-          }
-        })
-      }
-    }*/ else {
+    }
+    else if (!this.data.canIUse){
       // 在没有 open-type=getUserInfo 版本的兼容处理
       wx.getUserInfo({
         success: res => {
@@ -107,16 +85,30 @@ Page({
         }
       })
     }
+    console.log('hasUserInfo = ' + this.data.hasUserInfo)
   },
   onShow: function(){
     this.pageIn()
   },
   getUserInfo: function(e) {
     console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
+    if (!e.detail.userInfo) {
+      app.globalData.hasUserInfo = false
+      this.setData({
+        hasUserInfo: false
+      })
+      wx.setStorageSync('hasUserInfo', false)
+    }
+    else {
+      app.globalData.hasUserInfo = true
+      app.globalData.userInfo = e.detail.userInfo
+      this.setData({
+        userInfo: e.detail.userInfo,
+        hasUserInfo: true
+      })
+      wx.setStorageSync('hasUserInfo', true)
+      wx.setStorageSync('userInfo', e.detail.userInfo)
+    }
   },
+  //获取和更新用户信息
 })

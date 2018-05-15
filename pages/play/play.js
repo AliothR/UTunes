@@ -5,14 +5,14 @@ var direction = null
 const stdA = app.stdA
 const note = wx.createInnerAudioContext()
 const MAX_LEVEL = 30
-const MAX_LIFE = 3
+const MAX_LIFE = 0
 var ready = false
 var retry = true
 var originX = 0
 var originY = 0
 var moveDirection = 1
 var setMoveDirection = true
-var window
+var window = null
 var lastRenderTime = new Date().getTime()
 var selectDown = false
 var pageReady = false
@@ -127,20 +127,17 @@ Page({
     })
     retry = true
     pageReady = false
-    console.log('onLoad')
     if (!app.globalData.firstTimePlay) {
       this.start()
     }
     else this.showGuide()
   },
   onUnload: function () {
-    console.log('onUnload')
     this.stopPlay()
     retry = true
     this.triggerPageOpacity()
   },
   onShow: function () {
-    console.log('onShow')
     if (!app.globalData.firstTimePlay) {
       setTimeout(this.triggerPageOpacity, 250)
     }else{
@@ -158,7 +155,6 @@ Page({
     }
   },
   onHide: function () {
-    console.log('onHide')
     if (this.data.noteOnePlaying) stdA.stop()
     if (this.data.noteTwoPlaying) note.stop()
     clearTimeout(stdATimer)
@@ -190,7 +186,7 @@ Page({
       success: res => {
         window = { height: res.windowHeight, width: res.windowWidth }
       }
-    });
+    })
     note.obeyMuteSwitch = false
     stdA.onPlay(() => { this.setData({ noteOnePlaying: 1 }) })
     stdA.onEnded(() => { this.setData({ noteOnePlaying: 2, selectMove: 1 }) })
@@ -256,7 +252,6 @@ Page({
     setMoveDirection = true
     if (this.data.answerMatch.none) {
       this.clearMove()
-      console.log()
     }
     else if(this.data.answerMatch.right) {
       setTimeout(this.clearMove, 200)
@@ -274,14 +269,12 @@ Page({
       answerMatch.right = 1
       score += 2 * level  //Math.max(10, Math.ceil(level / 5) * 10)
       level = level == MAX_LEVEL ? 'Master' : level + 1
-      console.log()
     }
     else {
       answerMatch.wrong = 1
       score = Math.max(0, score - level)  //Math.max(0, score - Math.max(5, Math.ceil(level / 5) * 5))
       level = lifes > 1 ? Math.max(0, level - 1) : level
       lifes = lifes - 1
-      console.log()
     }
     this.setData({
       answerMatch: answerMatch,
