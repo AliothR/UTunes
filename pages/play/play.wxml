@@ -55,6 +55,6 @@
     <view class="arrow-horizontal"></view>
   </view>
   <view class="footer">
-    <view class="I-know {{iKnowButton}}" bindtap="iKnow">{{iKnowText}}</view>
+    <view class="I-know iconfont icon-right" bindtap="iKnow" hover-class='active-button'></view>
   </view>
 </view>

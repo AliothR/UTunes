@@ -197,7 +197,7 @@ page{
   left: 0;
   width: 750rpx;
   height: 100vh;
-  background-color: rgba(151,220,199,.5);
+  background-color: rgba(35,138,107,.8);
   transition:opacity 0.25s ease;
 }
 .guide-step{
@@ -228,8 +228,8 @@ page{
   background-size: auto 100%;
   background-position: center center;
   background-repeat: no-repeat;
-  margin-top: 40vh;
-  height: 40vh;
+  margin-top: 47.5vh;
+  height: 35vh;
   width: 500px;
 }
 .arrow-horizontal{
@@ -238,7 +238,7 @@ page{
   background-position: center center;
   background-repeat: no-repeat;
   transform: translate(-7.5vh,0);
-  margin-top: 57.5vh;
+  margin-top: 62.5vh;
   height: 10vh;
   width: 20vh;
 }
@@ -249,7 +249,7 @@ page{
 }
 .I-know{
   position:absolute;
-  font-size:50rpx;
+  font-size:100rpx;
   line-height:50rpx;
   padding:50rpx 0;
   border:0px solid transparent;

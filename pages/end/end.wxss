@@ -6,30 +6,39 @@
 .container{
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding:5vh 0 15vh;
+}
+.result, .option{
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  margin:50rpx;
-  width: 650rpx;
-  padding:0;
+  align-items: center;
+}
+.level, .score, .ratio, .review, .retry, .share{
+  flex-grow: 0;
 }
 .level{
-  font-size:16px;
+  font-size:3vh;
+  line-height: 3vh;
 }
 .score{
-  font-size:100px;
-  line-height: 100px;
-  padding-top: 5px;
+  font-size: 20vh;
+  line-height: 20vh;
 }
 .ratio{
-  font-size:12px;
+  font-size: 3vh;
+  line-height: 3vh;
 }
 .review{
-  margin: 50rpx;
-  width:500rpx;
+  margin: 25rpx 50rpx;
+  width:550rpx;
   border: 15rpx dashed white;
   border-radius: 50rpx;
-  padding:50rpx;
-  font-size: 20px;
-  line-height: 30px;
+  padding:25rpx;
+  font-size: 40rpx;
+  line-height: 60rpx;
 }
 .review-content{
   border-bottom: 1px solid rgba(255,255,255,.4);
@@ -37,24 +46,65 @@
 .nickname{
   color: rgba(0,255,181,1)
 }
-.level, .score, .ratio, .review{
-  flex-grow: 1;
+.option{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
-.retry{
-  flex-grow: 3;
+.retry-button, .share-group, .share-pyq, .share-pyq-share{
+  border: 0px solid transparent;
+  margin: 20rpx;
+  text-align: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(255,255,255,1);
+  color: rgba(0,255,181,1);
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+  transition: all 0.25s ease;
 }
 .retry-button{
-  font-size:50rpx;
-  line-height:50rpx;
-  padding:50rpx 0;
-  border:0px solid transparent;
-  height:50rpx;
-  width:150rpx;
-  text-align:center;
-  overflow:hidden;
-  border-radius:50%;
-  background:rgba(255,255,255,1);
-  color:rgba(0,255,181,1);
-  box-shadow:0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
-  transition:all 0.25s ease;
+  font-size: 70rpx;
+  line-height: 70rpx;
+  padding: 40rpx 0;
+  height: 70rpx;
+  width: 150rpx;
+}
+.share-group, .share-pyq, .share-pyq-share{
+  font-size: 50rpx;
+  line-height: 30rpx;
+  padding: 30rpx 0;
+  height: 30rpx;
+  width: 90rpx;
+}
+.share-group{
+  height: 90rpx;
+}
+.active-button{
+  background-color:rgba(0,0,0,.2);
+  box-shadow:0 0px 0px 0 rgba(0,0,0,.16) inset,0 0px 0px 0 rgba(0,0,0,.12) inset;
+}
+.canvas-layer{
+  height: 100vh;
+  width: 750rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: rgba(28,115,89,.8)
+}
+canvas{
+  margin-top: -2000px;
+  margin-left: -2000px;
+}
+page{
+  height: 100vh;
+  width: 750rpx;
+  overflow: hidden;
 }
