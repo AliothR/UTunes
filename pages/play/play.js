@@ -5,7 +5,7 @@ var direction = null
 const stdA = app.stdA
 const note = wx.createInnerAudioContext()
 const MAX_LEVEL = 30
-const MAX_LIFE = 0
+const MAX_LIFE = 3
 var ready = false
 var retry = true
 var originX = 0
@@ -34,9 +34,7 @@ Page({
     answerMatch: {right: 0,wrong: 0,none: 1},
     pageOpacity: 0,
     selectMove: 1,
-    guidePage: [],
-    iKnowText: 'Next',
-    iKnowButton: ''
+    guidePage: []
   },
   clearFirstTimePlay(){
     this.setData({
@@ -46,17 +44,6 @@ Page({
     wx.setStorageSync('firstTimePlay', this.data.firstTimePlay)
     this.start()
     wx.setNavigationBarColor({frontColor: '#ffffff',backgroundColor: '#2eb88d'})
-  },
-  clearIKnowTap() {
-    this.setData({
-      iKnowButton: 'visited-button'
-    })
-  },
-  iKnowTap() {
-    this.setData({
-      iKnowButton: 'active-button'
-    })
-    setTimeout(this.clearIKnowTap, 250)
   },
   iKnow(){
     if(!this.data.guidePage[2]){
@@ -68,10 +55,8 @@ Page({
       else {
         this.setData({
           guidePage: [false, false, true],
-          iKnowText: 'Go'
         })
       }
-      this.iKnowTap()
     }
     else {
       this.setData({
@@ -79,7 +64,6 @@ Page({
         guideOpacity: 0,
         pageOpacity: 1
       })
-      this.iKnowTap()
       setTimeout(this.clearFirstTimePlay, 250)
     }
   },
@@ -166,7 +150,7 @@ Page({
     })
   },
   showGuide(){
-    wx.setNavigationBarColor({ frontColor: '#ffffff', backgroundColor: '#63caab' })
+    wx.setNavigationBarColor({ frontColor: '#ffffff', backgroundColor: '#259372' })
     var guidePage = [true, false, false]
     this.setData({
       guidePage: guidePage,

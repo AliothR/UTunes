@@ -9,6 +9,7 @@ Page({
     userInfo: {},
     hasUserInfo: app.globalData.hasUserInfo,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    gameStartDisable: false
   },
   play() {
     wx.navigateTo({
@@ -23,16 +24,6 @@ Page({
   pageOut() {
     this.setData({
       pageCondition: "page-out"
-    })
-  },
-  activeButton() {
-    this.setData({
-      gameStartButton: "active-button"
-    })
-  },
-  clearButton() {
-    this.setData({
-      gameStartButton: "visited-button",
     })
   },
   //事件处理函数
@@ -55,8 +46,9 @@ Page({
     }
   },适配新版用户信息*/
   bindPlayTap: function() {
-    this.activeButton()
-    setTimeout(this.clearButton, 250)
+    this.setData({
+      gameStartDisable: true
+    })
     setTimeout(this.pageOut, 500)
     setTimeout(this.play,500)
   },
@@ -87,7 +79,10 @@ Page({
     }
     console.log('hasUserInfo = ' + this.data.hasUserInfo)
   },
-  onShow: function(){
+  onShow: function () {
+    this.setData({
+      gameStartDisable: false
+    })
     this.pageIn()
   },
   getUserInfo: function(e) {
@@ -109,6 +104,9 @@ Page({
       wx.setStorageSync('hasUserInfo', true)
       wx.setStorageSync('userInfo', e.detail.userInfo)
     }
+    this.setData({
+      gameStartDisable: false
+    })
   },
   //获取和更新用户信息
 })

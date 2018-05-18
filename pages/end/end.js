@@ -4,9 +4,8 @@ const app = getApp()
 var userInfo = app.globalData.userInfo
 var level = app.globalData.scoreboard.level
 var num = 0
-var reviewGroup = null
 var window = {height:0, width:0}
-var imageUrl
+var imageUrl = null
 var origin = null
 var ctxStore = null
 var that = null
@@ -116,9 +115,7 @@ Page({
       position = this.drawText(ctx, review.group[out], position.x, position.y, review.fontSize, 'left')
       position.y += (review.lineHeight - review.fontSize) * 0.5
       ctx.moveTo(position.x, position.y)
-      position.x = review.fontSize * review.group[out].length + 75 * rpx
-      ctx.lineTo(position.x, position.y)
-      position.x = 75 * rpx
+      ctx.lineTo((position.x + review.fontSize * review.group[out].length), position.y)
       out = out + 1
     }
     ctx.closePath()
@@ -135,7 +132,7 @@ Page({
     var blank = 6*vh
     var review = {
       content: reviewGroup.pre + (reviewGroup.middle ? reviewGroup.middle : '') + reviewGroup.post,
-      width: size.width - 150*rpx,
+      width: null,
       height: null,
       lineNumber: null,
       group: [],
@@ -143,9 +140,22 @@ Page({
       lineHeight: 60*rpx,
       QRSize: 170*rpx
     }
+    review.width = size.width - 150 * rpx,
     review.lineNumber = Math.floor(review.width / review.fontSize)
     review.height = Math.ceil(review.content.length / review.lineNumber) * review.lineHeight
     size.height = blank + 2.5 * vh + 15 * vh + 2.5 * vh + blank + 25 * rpx + review.height + 25 * rpx + (origin == 'group' ? 0 : (blank + review.QRSize)) + blank
+    while(origin == 'group'&&(Math.abs(size.height - 0.8 * size.width) > 5*rpx)){
+      if(size.height <= (size.width * 0.8)){
+        size.height = size.width * 0.8
+      }
+      else {
+        size.width = size.height * 1.25
+        review.width = size.width - 150 * rpx,
+        review.lineNumber = Math.floor(review.width / review.fontSize)
+        review.height = Math.ceil(review.content.length / review.lineNumber) * review.lineHeight
+        size.height = blank + 2.5 * vh + 15 * vh + 2.5 * vh + blank + 25 * rpx + review.height + 25 * rpx + (origin == 'group' ? 0 : (blank + review.QRSize)) + blank
+      }
+    }
     var tmp = 0
     review.group[tmp] = review.content.substring(review.lineNumber * tmp, review.lineNumber * (tmp + 1))
     while(review.group[tmp].length == review.lineNumber){
@@ -182,17 +192,18 @@ Page({
     }
     ctxStore = ctx
     that = this
-    this.setData({
+    setTimeout(function(){that.setData({
       canvasSize: { height: Math.ceil(size.height), width: size.width, opacity: 0 }
-    }, () => {
+    }, function(){
+      setTimeout(function(){
       ctxStore.draw(true, () => {
-        that.saveCanvasToFile()
-      })
-    })
+        that.saveCanvasToFile(5)
+      })},100)
+    })},100)
   },
   delayDraw() {
   },
-  saveCanvasToFile(repeat = true) {
+  saveCanvasToFile(repeat) {
     that = this
     wx.canvasToTempFilePath({
       canvasId: 'share-pyq',
@@ -217,7 +228,8 @@ Page({
       },
       fail(res) {
         if (res.errMsg == 'canvasToTempFilePath:fail:create bitmap failed'&&repeat) {
-          that.saveCanvasToFile(false)
+          repeat -= 1
+          setTimeout(function(){that.saveCanvasToFile(false)},100)
         }
         console.log(res)
       }
@@ -285,7 +297,12 @@ Page({
   },
   onLoad: function(){
     this.getWindow()
+    level = app.globalData.scoreboard.level
     this.getReviewGroup()
+    imageUrl = null
+    origin = null
+    ctxStore = null
+    that = null
     origin = 'group'
     this.drawShareCanvas()
   },
