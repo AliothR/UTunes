@@ -62,7 +62,10 @@ App({
           } catch (e){console.error('hasUserInfo true but no userInfo!')}
         }
       }
-      else{console.log('no hasUserInfo')}
+      else{
+        console.log('no hasUserInfo')
+        this.globalData.hasUserInfo = null
+      }
     } catch (e){console.error(e)}
     //如果已有用户信息
     stdA.src = this.globalData.audioPosition + '/stdA.mp3'
