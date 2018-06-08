@@ -38,6 +38,7 @@ Page({
     var numT = Math.floor(Math.random() * this.results[this.lChart[level]].length)
     var reviewGroupT = this.results[this.lChart[level]][numT]
     num = numT
+    userInfo = app.globalData.userInfo
     if (reviewGroupT.post === null) {
       console.log(reviewGroupT)
     }
@@ -377,7 +378,7 @@ Page({
       post: '来说，即使闭着眼睛往暖壶灌水都不会漫出来'
     }, {
       pre: '',
-      post: '的听力非常好，TA甚至能从对方声音的嘶哑程度听出TA昨天吃的麻辣烫是什么辣度！'
+      post: '的听力非常好，TA甚至能从声音的嘶哑程度听出对方昨天吃的麻辣烫是什么辣度！'
     }, {
       pre: '有着超凡的耳力的',
       post: '，听得出楼下那个拉小提琴的同学，每天都在进步一点点'
