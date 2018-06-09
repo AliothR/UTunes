@@ -2,12 +2,12 @@
 <view class="container {{pageCondition}}">
   <block>
     <view class="userinfo">
-      <block wx:if="{{hasUserInfo}}">
-        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' class="userinfo-avatar" style="background-image:url({{userInfo.avatarUrl}})" background-size="cover"></button>
-        <text class="userinfo-nickname"><text class="nickname">{{userInfo.nickName}}</text></text>
+      <block wx:if="{{hasUserInfo === null||hasUserInfo === false}}">
+        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' class="userinfo-avatar minipro-img" background-size="cover"></button>
       </block>
       <block wx:else>
-        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' class="userinfo-avatar" style="background-image:url(/resource/minipro_img.png)" background-size="cover"></button>
+        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' class="userinfo-avatar" style="background-image:url({{userInfo.avatarUrl}})" background-size="cover"></button>
+        <text class="userinfo-nickname"><text class="nickname">{{userInfo.nickName}}</text></text>
       </block>
     </view>
     <view wx:if="{{hasUserInfo === null}}"class="getUserInfo">
