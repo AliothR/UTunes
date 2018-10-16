@@ -10,7 +10,7 @@
         <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' bindgetuserinfo='getUserInfo' class="userinfo-avatar" style="background-image:url(/resource/minipro_img.png)" background-size="cover"></button>
       </block>
     </view>
-    <view wx:if="{{hasUserInfo === undefined || hasUserInfo === null}}"class="getUserInfo">
+    <view wx:if="{{hasUserInfo === undefined || hasUserInfo === null}}" class="getUserInfo">
       <button class="getUserInfo-button iconfont icon-user" hover-class="active-button" open-type='getUserInfo' bindgetuserinfo='getUserInfo'></button>
     </view>
     <view wx:else class="gamestart">

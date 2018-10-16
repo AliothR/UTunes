@@ -78,9 +78,6 @@ App({
               // 可以将 res 发送给后台解码出 unionId
               this.globalData.userInfo = res.userInfo
               console.log(res.userInfo)
-              if(res.userInfo.country != 'China'){
-                this.globalData.audioPosition = 'http://165.227.29.231/UTunes/mp3s'
-              }
               stdA.src = this.globalData.audioPosition + '/stdA.mp3'
               // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
               // 所以此处加入 callback 以防止这种情况
@@ -105,7 +102,10 @@ App({
           } catch (e){console.error('hasUserInfo true but no userInfo!')}
         }
       }
-      else{console.log('no hasUserInfo')}
+      else{
+        console.log('no hasUserInfo')
+        this.globalData.hasUserInfo = null
+      }
     } catch (e){console.error(e)}
     //如果已有用户信息
     stdA.src = this.globalData.audioPosition + '/stdA.mp3'

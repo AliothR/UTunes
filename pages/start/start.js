@@ -81,6 +81,7 @@ Page({
     else {
       app.globalData.hasUserInfo = true
       app.globalData.userInfo = e.detail.userInfo
+      if (e.detail.userInfo.country != 'China') {app.globalData.audioPosition = 'http://165.227.29.231/UTunes/mp3s'}
       this.setData({
         userInfo: e.detail.userInfo,
         hasUserInfo: true

@@ -10,6 +10,18 @@ var imageUrl = null
 var origin = null
 var ctxStore = null
 var that = null
+var scoreboard = null
+var size = null
+var vh = null
+var rpx = null
+var reviewGroup = null
+var blank = null
+var review = null
+var ctx = null
+var position = null
+var timeOut = 40
+var out = 0
+var callbackAfter = null
 
 Page({
   data: {
@@ -39,6 +51,7 @@ Page({
     var numT = Math.floor(Math.random() * this.results[this.lChart[level]].length)
     var reviewGroupT = this.results[this.lChart[level]][numT]
     num = numT
+    userInfo = app.globalData.userInfo
     if (reviewGroupT.post === null) {
       console.log(reviewGroupT)
     }
@@ -64,7 +77,7 @@ Page({
   canvasIdErrorCallback(e) {
     console.error(e.detail.errMsg)
   },
-  drawText(ctx, text, x, y, fontSize, align){
+  drawText(text, x, y, fontSize, align, callback){
     ctx.setTextAlign(align)
     ctx.setTextBaseline('middle')
     ctx.setFontSize(fontSize)
@@ -72,66 +85,76 @@ Page({
     y += fontSize * 0.5
     ctx.fillText(text, x, y)
     y += fontSize * 0.5
-    return { x: x, y: y }
+    position.x = x
+    position.y = y
+    console.log('drawText '+text+' '+align)
+    setTimeout(callback, timeOut)
   },//输出文字
-  drawReviewDash(ctx, x, y, r, size, review, rpx) {
+  drawReviewDash(r, callback) {
     const PI = Math.PI
+    ctx.beginPath()
     ctx.setLineDash([30*rpx, 30*rpx], )
     ctx.setLineWidth(15*rpx)
     ctx.setStrokeStyle('#ffffff')
-    ctx.beginPath()
-    ctx.moveTo(x, y)
-    x += size.width - 200*rpx
-    ctx.lineTo(x, y)
-    y += r
-    ctx.arc(x, y, r, -0.5 * PI, 0)
-    x += r
-    y += review.height - 50*rpx
-    ctx.lineTo(x, y)
-    x -= r
-    ctx.arc(x, y, r, 0, 0.5 * PI)
-    y += r
-    x -= size.width - 200 * rpx
-    ctx.lineTo(x, y)
-    y -= r
-    ctx.arc(x, y, r, 0.5 * PI, PI)
-    x -= r
-    y -= (review.height - 50*rpx)
-    ctx.lineTo(x, y)
-    x += r
-    ctx.arc(x, y, r, PI, 1.5 * PI)
-    y -= r
+    ctx.moveTo(position.x, position.y)
+    position.x += size.width - 200*rpx
+    ctx.lineTo(position.x, position.y)
+    position.y += r
+    ctx.arc(position.x, position.y, r, -0.5 * PI, 0)
+    position.x += r
+    position.y += review.height - 50*rpx
+    ctx.lineTo(position.x, position.y)
+    position.x -= r
+    ctx.arc(position.x, position.y, r, 0, 0.5 * PI)
+    position.y += r
+    position.x -= size.width - 200 * rpx
+    ctx.lineTo(position.x, position.y)
+    position.y -= r
+    ctx.arc(position.x, position.y, r, 0.5 * PI, PI)
+    position.x -= r
+    position.y -= (review.height - 50*rpx)
+    ctx.lineTo(position.x, position.y)
+    position.x += r
+    ctx.arc(position.x, position.y, r, PI, 1.5 * PI)
+    position.y -= r
     ctx.closePath()
     ctx.stroke()
-    return {x: x, y: y}
+    setTimeout(callback, timeOut)
   },//画review虚线框
-  drawReview(ctx, review, position, rpx){
-    var out = 0
-    ctx.setLineWidth(1)
-    ctx.setStrokeStyle('rgba(255,255,255,.4)')
-    ctx.setLineDash([1,0],0)
-    ctx.beginPath()
-    while(review.group[out]){
+  drawLine() {
+    if (review.group[out]) {
       position.y += (review.lineHeight - review.fontSize) * 0.5
-      position = this.drawText(ctx, review.group[out], position.x, position.y, review.fontSize, 'left')
-      position.y += (review.lineHeight - review.fontSize) * 0.5
-      ctx.moveTo(position.x, position.y)
-      ctx.lineTo((position.x + review.fontSize * review.group[out].length), position.y)
-      out = out + 1
+      that.drawText(review.group[out], position.x, position.y, review.fontSize, 'left', function () {
+        position.y += (review.lineHeight - review.fontSize) * 0.5
+        ctx.beginPath()
+        ctx.setLineWidth(1)
+        ctx.setStrokeStyle('rgba(255,255,255,.4)')
+        ctx.setLineDash([1, 0], 0)
+        ctx.moveTo(position.x, position.y)
+        ctx.lineTo((position.x + review.fontSize * review.group[out].length), position.y)
+        ctx.closePath()
+        ctx.stroke()
+        out = out + 1
+        that.drawLine()
+      })
     }
-    ctx.closePath()
-    ctx.stroke()
-    return {x: position.x, y: position.y}
+    else{
+      setTimeout(callbackAfter, timeOut)
+    }
+  },
+  drawReview(callback){
+    out = 0
+    callbackAfter = callback
+    that.drawLine()
   },//输出Review
   drawShareCanvas(){
-    that = this
-    var scoreboard = this.data.scoreboard
-    var size = { height: 0, width: window.width * (origin == 'group' ? 1 : 0.8)}
-    var vh = window.height / 100
-    var rpx = window.width / 750
-    var reviewGroup = this.data.reviewGroup
-    var blank = 6*vh
-    var review = {
+    scoreboard = this.data.scoreboard
+    size = { height: 0, width: window.width * (origin == 'group' ? 1 : 0.8)}
+    vh = window.height / 100
+    rpx = window.width / 750
+    reviewGroup = this.data.reviewGroup
+    blank = 6*vh
+    review = {
       content: reviewGroup.pre + (reviewGroup.middle ? reviewGroup.middle : '') + reviewGroup.post,
       width: null,
       height: null,
@@ -163,46 +186,69 @@ Page({
       tmp = tmp + 1
       review.group[tmp] = review.content.substring(review.lineNumber * tmp, review.lineNumber * (tmp + 1))
     }//处理review换行
-    var ctx = wx.createCanvasContext('share-pyq')
-    var position = {x: 0, y: 0}
+    ctx = wx.createCanvasContext('share-pyq')
+    position = {x: 0, y: 0}
     var r = 50*rpx
+    that = this
     ctx.rect(0, 0, size.width, size.height)
     ctx.setFillStyle('rgba(46,184,142,1)')
     ctx.fill()
     position.y = blank
-    position = this.drawText(ctx, 'Level ' + scoreboard.level, size.width / 2, position.y, 2.5*vh, 'center')
-    position = this.drawText(ctx, scoreboard.score, size.width / 2, position.y, 15*vh, 'center')
-    position = this.drawText(ctx, scoreboard.ratio + '% of a half step', size.width / 2, position.y, 2.5*vh, 'center')
-    position.y = position.y + blank
-    position.x = 100*rpx
-    position = this.drawReviewDash(ctx, position.x, position.y, r, size, review, rpx)
-    position.y = position.y + 25*rpx
-    position.x = 75*rpx
-    position = this.drawReview(ctx, review, position, rpx)
-    position.y = position.y + 25*rpx
-    if (origin == 'pyq') {
-      position.y = position.y + blank
-      position.x = (size.width - review.QRSize - 7 * review.fontSize) * 0.4 + 7 * review.fontSize
-      position.y = position.y + (review.QRSize - review.fontSize * 2 - 10 * rpx) / 2
-      position = this.drawText(ctx, '扫码关注公众号', position.x, position.y, review.fontSize, 'right')
-      position.y += 10 * rpx
-      position = this.drawText(ctx, '参与测试', position.x, position.y, review.fontSize, 'right')
-      position.x = size.width - (size.width - review.QRSize - 7 * review.fontSize) * 0.4 - review.QRSize
-      position.y = position.y - (review.QRSize + review.fontSize * 2 + 10 * rpx) / 2
-      ctx.drawImage('/resource/QRcode.png', position.x, position.y, review.QRSize, review.QRSize)
-    }
-    ctxStore = ctx
-    that = this
-    setTimeout(function(){that.setData({
-      canvasSize: { height: Math.ceil(size.height), width: size.width, opacity: 0 }
-    }, function(){
-      setTimeout(function(){
-      ctxStore.draw(true, () => {
-        that.saveCanvasToFile(5)
-      })},100)
-    })},100)
-  },
-  delayDraw() {
+    that.drawText('Level ' + scoreboard.level, size.width / 2, position.y, 2.5 * vh, 'center', function () {
+      that.drawText(scoreboard.score, size.width / 2, position.y, 15 * vh, 'center', function () {
+        that.drawText(scoreboard.ratio + '% of a half step', size.width / 2, position.y, 2.5 * vh, 'center', function(){
+          position.y = position.y + blank
+          position.x = 100 * rpx
+          that.drawReviewDash(r, function () {
+            position.y = position.y + 25 * rpx
+            position.x = 75 * rpx
+            that.drawReview(function () {
+              position.y = position.y + 25 * rpx
+              if (origin == 'pyq') {
+                position.y = position.y + blank
+                position.x = (size.width - review.QRSize - 7 * review.fontSize) * 0.4 + 7 * review.fontSize
+                position.y = position.y + (review.QRSize - review.fontSize * 2 - 10 * rpx) / 2
+                that.drawText('扫码关注公众号', position.x, position.y, review.fontSize, 'right', function () {
+                  position.y += 10 * rpx
+                  that.drawText('参与测试', position.x, position.y, review.fontSize, 'right', function(){
+                    position.x = size.width - (size.width - review.QRSize - 7 * review.fontSize) * 0.4 - review.QRSize
+                    position.y = position.y - (review.QRSize + review.fontSize * 2 + 10 * rpx) / 2
+                    ctx.drawImage('/resource/QRcode.png', position.x, position.y, review.QRSize, review.QRSize)
+
+                    ctxStore = ctx
+                    setTimeout(function () {
+                      that.setData({
+                        canvasSize: { height: Math.ceil(size.height), width: size.width, opacity: 0 }
+                      }, function () {
+                        setTimeout(function () {
+                          ctxStore.draw(true, () => {
+                            that.saveCanvasToFile(5)
+                          })
+                        }, timeOut)
+                      })
+                    }, timeOut)
+                  })
+                })
+              }
+              else {
+                ctxStore = ctx
+                setTimeout(function () {
+                  that.setData({
+                    canvasSize: { height: Math.ceil(size.height), width: size.width, opacity: 0 }
+                  }, function () {
+                    setTimeout(function () {
+                      ctxStore.draw(true, () => {
+                        that.saveCanvasToFile(5)
+                      })
+                    }, timeOut)
+                  })
+                }, timeOut)
+              }
+            })
+          })
+        })
+      })
+    })
   },
   saveCanvasToFile(repeat) {
     that = this
@@ -221,10 +267,10 @@ Page({
             success(res) {
               imageUrl = res.savedFilePath
               console.log('imageUrl = ' + imageUrl)
+              origin = 'pyq'
+              that.drawShareCanvas()
             }
           })
-          origin = 'pyq'
-          that.drawShareCanvas()
         }
       },
       fail(res) {
@@ -252,7 +298,7 @@ Page({
             content: '请允许写入相册的权限哟',
             confirmText: '好的呀',
             cancelText: '不要',
-            confirmColor: 'rgb(0,255,181)',
+            confirmColor: '#00ffb5',
             success(res) {
               if (res.confirm == true) {
                 wx.openSetting({
@@ -283,6 +329,7 @@ Page({
     else{
       wx.showToast({
         title: '请等待图片加载完成',
+        icon: 'loading',
         complete(res){
           console.log(res)
           that.closeShare()
@@ -359,19 +406,19 @@ Page({
     L2: [{
       pre: '',
       post: '从小听力不太好，没带眼镜的时候甚至弄不清讲台上说话的老师是男是女'
-    }, {
+    /*}, {
       pre: '啊哦，',
-      post: '耳力不算很突出哦。诶？快戴上耳机，离开科大西区工地远一点啦！'
+      post: '耳力不算很突出哦。诶？快戴上耳机，离开科大西区工地远一点啦！'*/
     }, {
       pre: '诶你说什么我没带眼镜听不太清？',
       post: null
     }],
     L3: [{
       pre: '',
-      post: '从不在意是不是别人跑调，宽容的TA总能欣赏别人的歌喉'
+      post: '从不在意别人是不是跑调，宽容的TA总能欣赏别人的歌喉'
     }, {
       pre: '',
-      post: '的音高感还算不错，TA能准确分辨出落在地上的硬币是一毛而不是一块'
+      post: '的音高感还算不错，能准确分辨出落在地上的硬币是一毛而不是一块'
     }, {
       pre: '',
       post: '对自己的电脑散热能力了如指掌，风扇音调很高的时候，TA决定让电脑休息一会'
@@ -391,7 +438,7 @@ Page({
     }],
     L5: [{
       pre: '',
-      post: '耳力不错，通过敲击西瓜，TA可以挑选出熟得最好的那一个'
+      post: '耳力不错，通过敲击西瓜，就可以挑选出熟得最好的那一个'
     }, {
       pre: '',
       post: '引以为傲的特异功能——根据脚步声判断体重'
@@ -404,7 +451,7 @@ Page({
       post: '来说，即使闭着眼睛往暖壶灌水都不会漫出来'
     }, {
       pre: '',
-      post: '的听力非常好，TA甚至能从对方声音的嘶哑程度听出TA昨天吃的麻辣烫是什么辣度！'
+      post: '的听力非常好，TA甚至能从声音的嘶哑程度听出对方昨天吃的麻辣烫是什么辣度！'
     }, {
       pre: '有着超凡的耳力的',
       post: '，听得出楼下那个拉小提琴的同学，每天都在进步一点点'
@@ -415,16 +462,16 @@ Page({
     }, {
       pre: '',
       post: '耳朵非常厉害，如果学习乐器的话，是可以凭借耳朵调音的呢！'
-    }, {
+    /*}, {
       pre: '如果不是学习成绩足够好，',
-      post: '应该去音乐学院才对'
+      post: '应该去音乐学院才对'*/
     }, {
       pre: '睡梦中的',
       post: '被蚊子的嗡嗡声吵醒，TA皱了皱眉:“可恶，和刚才的不是同一只。”'
     }],
     L8: [{
       pre: '哇晒！',
-      post: '的音高感怎么这么好！？我们几乎要怀疑你就是较音器！'
+      post: '的音高感怎么这么好！？我们几乎要怀疑TA就是较音器！'
     }, {
       pre: '',
       post: '的音高感是天才级别的，五岁时TA就能听出硬币掉到地上的音高对应钢琴的哪个键'
