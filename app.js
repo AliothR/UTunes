@@ -11,7 +11,7 @@ App({
       hasUserInfo: null
     },
     firstTimePlay: null,
-    audioPosition: 'http://home.ustc.edu.cn/~haku/mp3s'
+    audioPosition: 'http://chorus.ustc.edu.cn/student/mp3s'
   }, 
   updateFailed: function() {
     // 新版本下载失败
