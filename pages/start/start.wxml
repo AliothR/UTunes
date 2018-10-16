@@ -3,14 +3,14 @@
   <block>
     <view class="userinfo">
       <block wx:if="{{hasUserInfo}}">
-        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' class="userinfo-avatar" style="background-image:url({{userInfo.avatarUrl}})" background-size="cover"></button>
+        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' bindgetuserinfo='getUserInfo' class="userinfo-avatar" style="background-image:url({{userInfo.avatarUrl}})" background-size="cover"></button>
         <text class="userinfo-nickname"><text class="nickname">{{userInfo.nickName}}</text></text>
       </block>
       <block wx:else>
-        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' class="userinfo-avatar" style="background-image:url(/resource/minipro_img.png)" background-size="cover"></button>
+        <button bindgetuserinfo="getUserInfo" open-type='getUserInfo' bindgetuserinfo='getUserInfo' class="userinfo-avatar" style="background-image:url(/resource/minipro_img.png)" background-size="cover"></button>
       </block>
     </view>
-    <view wx:if="{{hasUserInfo === null}}"class="getUserInfo">
+    <view wx:if="{{hasUserInfo === undefined || hasUserInfo === null}}"class="getUserInfo">
       <button class="getUserInfo-button iconfont icon-user" hover-class="active-button" open-type='getUserInfo' bindgetuserinfo='getUserInfo'></button>
     </view>
     <view wx:else class="gamestart">

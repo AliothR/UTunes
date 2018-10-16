@@ -1,6 +1,7 @@
 //index.js
 //获取应用实例
 const app = getApp()
+var hasUserInfo = app.globalData.hasUserInfo
 var userInfo = app.globalData.userInfo
 var level = app.globalData.scoreboard.level
 var num = 0
@@ -295,7 +296,33 @@ Page({
       canvasSize: {height: this.data.canvasSize.height, width: this.data.canvasSize.width, opacity: 1}
     })
   },
+  sendResultToServer() {
+    wx.login({
+      success: function (res) {
+        wx.request({
+          url: 'https://chorus.ustc.edu.cn/student/gameResultStore.php',
+          method: 'POST',
+          data: {
+            deviceInfo: wx.getSystemInfoSync(),
+            userInfo: getApp().globalData.hasUserInfo ? getApp().globalData.userInfo : null,
+            code: res.code,
+            scoreboard: getApp().globalData.scoreboard
+          },
+          success: function (res) {
+            console.log('result update succeed')
+          },
+          fail: function () {
+            console.log('result update failed')
+          }
+        })
+      },
+      fail: function () {
+        console.log('login failed!')
+      }
+    })
+  },
   onLoad: function(){
+    this.sendResultToServer()
     this.getWindow()
     level = app.globalData.scoreboard.level
     this.getReviewGroup()

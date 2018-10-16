@@ -2,7 +2,6 @@
 //获取应用实例
 const app = getApp()
 
-
 Page({
   data: {
     motto: 'Hello World',
@@ -52,32 +51,17 @@ Page({
     setTimeout(this.pageOut, 500)
     setTimeout(this.play,500)
   },
-  onLoad: function () {
+  setUserInfo: function () {
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
         hasUserInfo: true
       })
     }
-    else if (!this.data.canIUse){
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          console.log
-          app.globalData.userInfo = res.userInfo
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
-        },
-        fail: res => {
-          this.setData({
-            hasUserInfo: false
-          })
-        }
-      })
-    }
     console.log('hasUserInfo = ' + this.data.hasUserInfo)
+  },
+  onLoad: function () {
+    this.setUserInfo();
   },
   onShow: function () {
     this.setData({
@@ -103,6 +87,27 @@ Page({
       })
       wx.setStorageSync('hasUserInfo', true)
       wx.setStorageSync('userInfo', e.detail.userInfo)
+      wx.login({
+        success: function (res) {
+          wx.request({
+            url: 'https://chorus.ustc.edu.cn/student/userInfoStore.php',
+            method: 'POST',
+            data: {
+              userInfo: e.detail.userInfo,
+              code: res.code
+            },
+            success: function (res) {
+              console.log('userInfo update succeed')
+            },
+            fail: function () {
+              console.log('userInfo update failed')
+            }
+          })
+        },
+        fail: function(){
+          console.log('login failed!')
+        }
+      })
     }
     this.setData({
       gameStartDisable: false
