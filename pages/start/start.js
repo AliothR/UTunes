@@ -52,16 +52,17 @@ Page({
     setTimeout(this.play,500)
   },
   setUserInfo: function () {
-    if (app.globalData.userInfo) {
+    if (!getApp().globalData.dataCleanComplete) setTimeout(this.setUserInfo, 50)
+    else if (app.globalData.userInfo) {
       this.setData({
-        userInfo: app.globalData.userInfo,
+        userInfo: getApp().globalData.userInfo,
         hasUserInfo: true
       })
     }
     console.log('hasUserInfo = ' + this.data.hasUserInfo)
   },
   onLoad: function () {
-    this.setUserInfo();
+    this.setUserInfo()
   },
   onShow: function () {
     this.setData({

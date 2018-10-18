@@ -11,7 +11,9 @@ App({
       hasUserInfo: null
     },
     firstTimePlay: null,
-    audioPosition: 'http://chorus.ustc.edu.cn/student/mp3s'
+    audioPosition: 'http://chorus.ustc.edu.cn/student/mp3s',
+    selfVersion: [1,0,1],
+    dataCleanComplete: null
   }, 
   updateFailed: function() {
     // 新版本下载失败
@@ -55,6 +57,78 @@ App({
 
     updateManager.onUpdateFailed(this.updateFailed)
   },
+  checkDataClean: function(callback){
+    var that = this
+    wx.login({
+      success: function (res) {
+        wx.request({
+          url: 'https://chorus.ustc.edu.cn/student/dataCleanCheck.php',
+          method: 'POST',
+          data: {
+            selfVersion: that.globalData.selfVersion,
+            code: res.code
+          },
+          success: function (res) {
+            if(res.data == '1'){
+              wx.setStorageSync('hasUserInfo', null)
+              that.globalData.scoreboard.hasUserInfo = null
+            }
+            that.globalData.dataCleanComplete = true
+            callback()
+          },
+          fail: function () {
+            console.log('dataClean check failed')
+            that.globalData.dataCleanComplete = true
+            callback()
+          }
+        })
+      },
+      fail: function () {
+        console.log('login failed!')
+        that.globalData.dataCleanComplete = true
+        callback()
+      }
+    })
+  },
+  checkUserInfo: function(){
+    try {
+      var hasUserInfo = wx.getStorageSync('hasUserInfo')
+      if (hasUserInfo != '') {
+        this.globalData.hasUserInfo = hasUserInfo
+        if (hasUserInfo) {
+          try {
+            var userInfo = wx.getStorageSync('userInfo')
+            if (userInfo) { this.globalData.userInfo = userInfo }
+            else { console.log('userInfo empty!') }
+          } catch (e) { console.error('hasUserInfo true but no userInfo!') }
+        }
+      }
+      else {
+        console.log('no hasUserInfo')
+        this.globalData.hasUserInfo = null
+      }
+    } catch (e) { console.error(e) }
+    //如果已有用户信息
+    stdA.src = this.globalData.audioPosition + '/stdA.mp3'
+    stdA.obeyMuteSwitch = false
+    try {
+      var firstTimePlay = wx.getStorageSync('firstTimePlay')
+      if (firstTimePlay === false) {
+        console.log('firstTimePlay', 'false')
+        this.globalData.firstTimePlay = firstTimePlay
+      }
+      else {
+        console.log('firstTimePlay', 'true')
+        wx.setStorageSync('firstTimePlay', 'true')
+        this.globalData.firstTimePlay = true
+      }
+    } catch (e) {
+      console.log('firstTimePlay', 'error')
+      console.log(e)
+      wx.setStorageSync('firstTimePlay', 'true')
+      this.globalData.firstTimePlay = true
+    }
+  },
   onLaunch: function () {
     this.checkUpdate()
     // 展示本地存储能力
@@ -68,6 +142,7 @@ App({
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
       }
     })
+    this.checkDataClean(this.checkUserInfo)
     // 获取用户信息
     /*wx.getSetting({
       success: res => {
@@ -90,43 +165,6 @@ App({
       }
     })*/
     //适配新的微信授权
-    try{
-      var hasUserInfo = wx.getStorageSync('hasUserInfo')
-      if(hasUserInfo != ''){
-        this.globalData.hasUserInfo = hasUserInfo
-        if(hasUserInfo){
-          try{
-            var userInfo = wx.getStorageSync('userInfo')
-            if(userInfo){this.globalData.userInfo = userInfo}
-            else{console.log('userInfo empty!')}
-          } catch (e){console.error('hasUserInfo true but no userInfo!')}
-        }
-      }
-      else{
-        console.log('no hasUserInfo')
-        this.globalData.hasUserInfo = null
-      }
-    } catch (e){console.error(e)}
-    //如果已有用户信息
-    stdA.src = this.globalData.audioPosition + '/stdA.mp3'
-    stdA.obeyMuteSwitch = false
-    try {
-      var firstTimePlay = wx.getStorageSync('firstTimePlay')
-      if (firstTimePlay === false) {
-        console.log('firstTimePlay', 'false')
-        this.globalData.firstTimePlay = firstTimePlay
-      }
-      else {
-        console.log('firstTimePlay', 'true')
-        wx.setStorageSync('firstTimePlay', 'true')
-        this.globalData.firstTimePlay = true
-      }
-    } catch (e) {
-      console.log('firstTimePlay', 'error')
-      console.log(e)
-      wx.setStorageSync('firstTimePlay', 'true')
-      this.globalData.firstTimePlay = true
-    }
   },
   stdA: stdA
 })

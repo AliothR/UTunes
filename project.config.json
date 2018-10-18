@@ -8,7 +8,7 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "1.9.98",
+	"libVersion": "2.3.0",
 	"appid": "wx5a7dbd4b8fd5f553",
 	"projectname": "UTunes",
 	"isGameTourist": false,
