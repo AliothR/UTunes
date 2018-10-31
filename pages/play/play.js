@@ -3,7 +3,7 @@
 const app = getApp()
 var direction = null
 const stdA = app.stdA
-const note = wx.createInnerAudioContext()
+var note = wx.createInnerAudioContext()
 const MAX_LEVEL = 30
 const MAX_LIFE = 3
 var ready = false
@@ -171,14 +171,14 @@ Page({
         window = { height: res.windowHeight, width: res.windowWidth }
       }
     })
-    note.obeyMuteSwitch = false
     stdA.onPlay(() => { this.setData({ noteOnePlaying: 1 }) })
     stdA.onEnded(() => { this.setData({ noteOnePlaying: 2, selectMove: 1 }) })
+    /*note.obeyMuteSwitch = false
     note.onPlay(() => {
       this.setData({ ready: true, noteTwoPlaying: 1 })
       ready = true
     })
-    note.onEnded(() => { this.setData({ noteTwoPlaying: 2 }) })
+    note.onEnded(() => { this.setData({ noteTwoPlaying: 2 }) })*/
     setTimeout(this.playNotes, 500)
   },
   getOrigin: function(e) {
@@ -301,7 +301,14 @@ Page({
     })
     if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
     console.log(this.data.level, this.data.score, direction, isRetry)
-    note.src = app.globalData.audioPosition + '/lv' + this.data.level + (direction == -1 ? '_l' : '_h') + '.mp3'
+    //note.src = app.globalData.audioPosition + '/lv' + this.data.level + (direction == -1 ? '_l' : '_h') + '.mp3'
+    note = direction == -1 ? app.globalData.notes[this.data.level - 1].l : app.globalData.notes[this.data.level - 1].h
+    note.obeyMuteSwitch = false
+    note.onPlay(() => {
+      this.setData({ ready: true, noteTwoPlaying: 1 })
+      ready = true
+    })
+    note.onEnded(() => { this.setData({ noteTwoPlaying: 2 }) })
     stdATimer = setTimeout(function () {
       console.log('Playing ' + stdA.src)
       stdA.play()

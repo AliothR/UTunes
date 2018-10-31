@@ -1,6 +1,7 @@
 //app.js
 //commit test
 const stdA = wx.createInnerAudioContext()
+const MAX_LEVEL = 30
 
 App({
   globalData: {
@@ -13,7 +14,8 @@ App({
     firstTimePlay: null,
     audioPosition: 'http://chorus.ustc.edu.cn/student/mp3s',
     selfVersion: [1,0,1],
-    dataCleanComplete: null
+    dataCleanComplete: null,
+    notes: []
   }, 
   updateFailed: function() {
     // 新版本下载失败
@@ -129,6 +131,19 @@ App({
       this.globalData.firstTimePlay = true
     }
   },
+  getNotes(num) {
+    var note_h = wx.createInnerAudioContext(), note_l = wx.createInnerAudioContext()
+    note_h.src = this.globalData.audioPosition + '/lv' + num + '_h.mp3'
+    note_l.src = this.globalData.audioPosition + '/lv' + num + '_l.mp3'
+    this.globalData.notes[num-1] = {
+      h: note_h,
+      l: note_l
+    }
+    if (num < MAX_LEVEL) {
+      console.log('buffering note '+num)
+      setTimeout(this.getNotes, 10, num + 1)
+    }
+  },
   onLaunch: function () {
     this.checkUpdate()
     // 展示本地存储能力
@@ -143,6 +158,7 @@ App({
       }
     })
     this.checkDataClean(this.checkUserInfo)
+    this.getNotes(1)
     // 获取用户信息
     /*wx.getSetting({
       success: res => {
