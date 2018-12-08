@@ -92,7 +92,7 @@ Page({
       wx.login({
         success: function (res) {
           wx.request({
-            url: 'https://chorus.ustc.edu.cn/student/userInfoStore.php',
+            url: 'https://chorus.ustc.edu.cn/student/UTunes/userInfoStore.php',
             method: 'POST',
             data: {
               userInfo: e.detail.userInfo,

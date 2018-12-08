@@ -12,8 +12,8 @@ App({
       hasUserInfo: null
     },
     firstTimePlay: null,
-    audioPosition: 'http://chorus.ustc.edu.cn/student/mp3s',
-    selfVersion: [1,0,1],
+    audioPosition: 'http://chorus.ustc.edu.cn/student/UTunes/mp3s',
+    selfVersion: [1,0,2],
     dataCleanComplete: null,
     notes: []
   }, 
@@ -64,7 +64,7 @@ App({
     wx.login({
       success: function (res) {
         wx.request({
-          url: 'https://chorus.ustc.edu.cn/student/dataCleanCheck.php',
+          url: 'https://chorus.ustc.edu.cn/student/UTunes/dataCleanCheck.php',
           method: 'POST',
           data: {
             selfVersion: that.globalData.selfVersion,
@@ -135,7 +135,7 @@ App({
     var note_h = wx.createInnerAudioContext(), note_l = wx.createInnerAudioContext()
     note_h.src = this.globalData.audioPosition + '/lv' + num + '_h.mp3'
     note_l.src = this.globalData.audioPosition + '/lv' + num + '_l.mp3'
-    this.globalData.notes[num-1] = {
+    this.globalData.notes[num] = {
       h: note_h,
       l: note_l
     }
@@ -158,7 +158,7 @@ App({
       }
     })
     this.checkDataClean(this.checkUserInfo)
-    this.getNotes(1)
+    this.getNotes(0)
     // 获取用户信息
     /*wx.getSetting({
       success: res => {

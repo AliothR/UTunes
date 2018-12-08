@@ -347,7 +347,7 @@ Page({
     wx.login({
       success: function (res) {
         wx.request({
-          url: 'https://chorus.ustc.edu.cn/student/gameResultStore.php',
+          url: 'https://chorus.ustc.edu.cn/student/UTunes/gameResultStore.php',
           method: 'POST',
           data: {
             deviceInfo: wx.getSystemInfoSync(),

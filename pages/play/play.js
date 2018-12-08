@@ -302,7 +302,7 @@ Page({
     if (!isRetry) direction = Math.round(Math.random()) * 2 - 1
     console.log(this.data.level, this.data.score, direction, isRetry)
     //note.src = app.globalData.audioPosition + '/lv' + this.data.level + (direction == -1 ? '_l' : '_h') + '.mp3'
-    note = direction == -1 ? app.globalData.notes[this.data.level - 1].l : app.globalData.notes[this.data.level - 1].h
+    note = direction == -1 ? app.globalData.notes[this.data.level].l : app.globalData.notes[this.data.level].h
     note.obeyMuteSwitch = false
     note.onPlay(() => {
       this.setData({ ready: true, noteTwoPlaying: 1 })
